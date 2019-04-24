@@ -41,7 +41,7 @@ int BuildHuffmanTree( ) //得到原始序列所构造的 HuffmanTree 的 WPL
         tmp2 = minHeap.top();
         minHeap.pop();
         wpl += tmp1 + tmp2;
-        minHeap.push(tmp1 + tmp2);
+        minHeap.push(tmp1 + tmp2); //注意这里放入堆的是元素和，而不是总和WPL
         if (minHeap.size() == 1) break;
     }
     return wpl;
@@ -60,7 +60,7 @@ bool isPrefixCode()
     for (int i = 0; i < n; ++ i) {
         string tmp = student[i].seq;
         for (int j = i + 1; j < n; ++ j) {
-            if (tmp == student[j].seq.substr(0, tmp.size()) ) {
+            if (tmp == student[j].seq.substr(0, tmp.size()) ) { //前缀码判断技巧
                 flag = false;
                 break;
             }
@@ -75,7 +75,7 @@ void Judge(int originalWPL)
         for (int i = 0; i < n; ++ i) {
             cin >> student[i].c >> student[i].seq;
         }
-        int newWPL = GetWPL();
+        int newWPL = GetWPL(); //注意这里的顺序问题
         sort(student.begin(), student.begin()+n, Cmp);
 //       cout << "new : " << newWPL << endl;
         puts( (isPrefixCode() && (newWPL == originalWPL)) ? "Yes" : "No");
