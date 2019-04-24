@@ -1,0 +1,90 @@
+#include <iostream>
+#include <string>
+#include <array>
+#include <algorithm>
+#include <queue>
+using namespace std;
+const int MAXN = 65;
+int n;
+int studentNum;
+class TreeNode
+{
+public:
+    int f;
+    char c;
+};
+class Node
+{
+public:
+    char c;
+    string seq;
+};
+array <TreeNode, MAXN> arr;
+array <Node, MAXN> student;
+priority_queue <int, vector<int>, greater<int> > minHeap;
+
+int Cmp(Node a, Node b)
+{
+    return a.seq.size() < b.seq.size();
+}
+int BuildHuffmanTree( ) //得到原始序列所构造的 HuffmanTree 的 WPL
+{
+    cin >> n;
+    for (int i = 0; i < n; ++ i) {
+        cin >> arr[i].c >> arr[i].f;
+        minHeap.push(arr[i].f);
+    }
+    int tmp1, tmp2,wpl = 0;
+    while (!minHeap.empty()) {
+        tmp1 = minHeap.top();
+        minHeap.pop();
+        tmp2 = minHeap.top();
+        minHeap.pop();
+        wpl += tmp1 + tmp2;
+        minHeap.push(tmp1 + tmp2);
+        if (minHeap.size() == 1) break;
+    }
+    return wpl;
+}
+int GetWPL()
+{
+    int WPL {};
+    for (int i = 0; i < n; ++ i) {
+        WPL += student[i].seq.size() * arr[i].f;
+    }
+    return WPL;
+}
+bool isPrefixCode()
+{
+    bool flag = true;
+    for (int i = 0; i < n; ++ i) {
+        string tmp = student[i].seq;
+        for (int j = i + 1; j < n; ++ j) {
+            if (tmp == student[j].seq.substr(0, tmp.size()) ) {
+                flag = false;
+                break;
+            }
+        }
+    }
+    return flag;
+}
+void Judge(int originalWPL)
+{
+    cin >> studentNum;
+    while (studentNum --) {
+        for (int i = 0; i < n; ++ i) {
+            cin >> student[i].c >> student[i].seq;
+        }
+        int newWPL = GetWPL();
+        sort(student.begin(), student.begin()+n, Cmp);
+//       cout << "new : " << newWPL << endl;
+        puts( (isPrefixCode() && (newWPL == originalWPL)) ? "Yes" : "No");
+    }
+}
+int main()
+{
+    int originalWPL = BuildHuffmanTree();
+//    cout << "original : " << originalWPL << endl;
+    Judge(originalWPL);
+    return 0;
+}
