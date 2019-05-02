@@ -1,0 +1,191 @@
+#include <iostream>
+#include <cstdio>
+#include <array>
+#include <cmath>
+#include <queue>
+#include <vector>
+#include <stack>
+#define eage EAGE
+#define INF 0x3ffffff
+using namespace std;
+
+int n, d;
+bool flag {false};
+class Point
+{
+public:
+    int x, y;
+    int root;
+    Point( ) {
+        x = 0, y = 0, root = -1;
+    }
+};
+const int MAXN = 105;
+const int D = 15;
+const int EAGE = 50;
+
+bool isSafe(int index);
+bool isAccessible(int index, int i);
+void ArrayInit( );
+bool FirstJump(int index);
+void Jump(int index);
+void Print();
+void ShortestPath();
+void isReasonable();
+
+array <Point, MAXN> crocodiles;
+array <bool, MAXN> visited;
+array <int, MAXN> dist;
+array <int, MAXN> path;
+queue <int> q;
+vector <int> vi;
+
+int main()
+{
+    ArrayInit( );
+//    DFStraversal(0);
+    isReasonable();
+    ShortestPath();
+//    for (int i = 0; i < n; ++ i) {
+//        printf("%d : %d : %d\n", i, dist[i], path[i]);
+//    }
+    Print( );
+    return 0;
+}
+void isReasonable()
+{
+    for (int i = 0; i < n; i ++) {
+        int x {crocodiles[i].x}, y {crocodiles[i].y};
+        if (sqrt(x * x + y * y) <= D / 2) {
+            dist[i] = -1;
+            crocodiles[i].x = crocodiles[i].y = INF;
+        }
+        if (max(abs(x), abs(y)) >= EAGE) {
+            dist[i] = -1;
+            crocodiles[i].x = crocodiles[i].y = INF;
+        }
+    }
+}
+bool isAccessible(int index, int i)
+{
+    int x1 {crocodiles[index].x}, y1 {crocodiles[index].y};
+    int x2 {crocodiles[i].x}, y2 {crocodiles[i].y};
+    bool flag = false;
+    int dis = (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
+    if (dis <= d * d) flag = true;
+    return flag;
+}
+
+bool isSafe(int index)
+{
+    int x {crocodiles[index].x}, y {crocodiles[index].y};
+    bool flag = false;
+    if (x > 0) {
+        if (eage - x <= d) flag = true;
+    }
+    else if (x <= 0) {
+        if (x + eage <= d) flag = true;
+    }
+    if (y > 0) {
+        if (eage - y <= d) flag = true;
+    }
+    else if (y <= 0) {
+        if (y + EAGE <= d) flag = true;
+    }
+    return flag;
+}
+void ArrayInit( )
+{
+//    fill(visited.begin(),visited.end(), false);
+    fill(dist.begin(), dist.end(), INF);
+    fill(path.begin(), path.end(), -1);
+    cin >> n >> d;
+    for (int i = 0; i < n; i ++) {
+        cin >> crocodiles[i].x >> crocodiles[i].y;
+    }
+}
+
+bool FirstJump(int index)
+{
+    int dis = crocodiles[index].x*crocodiles[index].x + crocodiles[index].y*crocodiles[index].y;
+    if ( sqrt(dis) - d <= D / 2 ) { //第一跳要标注出初始距离和根节点
+        dist[index] = 1;
+        crocodiles[index].root = index;
+        return true;
+    }
+    return false;
+}
+void Jump(int index)
+{
+    for (int i = 0; i < n; ++ i) {
+        if (dist[i] == INF) {
+            if (isAccessible(index, i)) {
+                q.push(i);
+                crocodiles[i].root = crocodiles[index].root;
+                dist[i] = dist[index] + 1;
+                path[i] = index;
+            }
+        }
+    }
+}
+void ShortestPath( )
+{
+     for (int i = 0; i < n; ++ i) {
+        if (D / 2 + d >= EAGE) {
+            flag = true;
+            break;
+        }
+        if (FirstJump(i)) {
+            q.push(i);
+            while (!q.empty()) {
+                int tmp = q.front();
+                q.pop();
+                if (isSafe(tmp)) {
+                    vi.push_back(tmp);
+                }
+                else {
+                    Jump(tmp);
+                }
+            }
+        }
+    }
+}
+void Print( )
+{
+    if (flag) {
+        cout << "1" << endl;
+        return;
+    }
+    if (vi.size() == 0) {
+        printf("0\n");
+    }
+    else {
+        int t = vi[0];
+        for (int i = 1; i < vi.size(); ++ i) {
+            int tmp = vi[i];
+            if (dist[tmp] < dist[t]) { //选择最短跳数
+                t = tmp;
+            }
+            else if (dist[tmp] == dist[t]) { //同一跳数，针对第一跳最近
+                int tmpRoot = crocodiles[tmp].root;
+                int tRoot = crocodiles[t].root;
+                int x1 {crocodiles[tmpRoot].x}, y1 {crocodiles[tmpRoot].y};
+                int x2 {crocodiles[tRoot].x}, y2 {crocodiles[tRoot].y};
+                if (x1 * x1 + y1 * y1 < x2 * x2 + y2 * y2) {
+                    t = tmp;
+                }
+            }
+        }
+        stack <int> st;
+        while ( t != -1) {
+            st.push(t);         //将路径上的点倒置
+            t = path[t];
+        }
+        cout << st.size() + 1 << endl;
+        while (!st.empty()) {
+            int tmp = st.top();
+            st.pop();
+            printf("%d %d\n", crocodiles[tmp].x, crocodiles[tmp].y);
+        }
+    }
+}
