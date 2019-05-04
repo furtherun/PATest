@@ -1,0 +1,126 @@
+#include <iostream>
+#include <array>
+#include <istream>
+#include <algorithm>
+
+using namespace std;
+const int problemMAXN = 7;
+const int userMAXN = 10005;
+int n, k, m; //人数，题目数，提交数
+int index = 1;
+class User
+{
+public:
+    int id;
+    int acNum;
+    array <int,problemMAXN> score; //总分存储在0号位
+//    friend istream& operator >> (istream& is, User u);
+};
+array <int, problemMAXN> problemScore;
+array <User, userMAXN> user;
+
+void Init();
+bool cmp(User u1, User u2);
+void Print();
+void Sort();
+void Output(int n);
+
+bool cmp (User u1, User u2)
+{
+    if (u1.score[0] != u2.score[0]) {
+        return u1.score[0] > u2.score[0];
+    }
+    else if (u1.acNum != u2.acNum){
+        return u1.acNum > u2.acNum;
+    }
+    else {
+        return u1.id < u2.id;
+    }
+}
+
+void Init ()
+{
+    cin >> n >> k >> m;
+    for (int i = 1; i <= k; ++ i) {
+        cin >> problemScore[i];
+    }
+    for (int i = 1; i <= n; ++ i) {
+        fill(user[i].score.begin(), user[i].score.end(), -1);
+        user[i].score[0] = 0;
+        user[i].acNum = 0;
+    }
+    int id,problemId, scoreObtained;
+    for (int i = 1; i <= m; ++ i) {
+        cin >> id >> problemId >> scoreObtained;
+        if (scoreObtained > -1) { //编译通过
+            if (scoreObtained == problemScore[problemId] && user[id].score[problemId] != problemScore[problemId]) user[id].acNum ++; //如果AC了
+            if (user[id].score[problemId] > -1) { //曾经获得了分数
+                if (scoreObtained > user[id].score[problemId]) {
+                    user[id].score[0] += (scoreObtained - user[id].score[problemId]);
+                    user[id].score[problemId] = scoreObtained;
+                }
+            }
+            else {
+                user[id].id = id;
+                user[id].score[0] += scoreObtained;
+                user[id].score[problemId] = scoreObtained;
+            }
+        }
+        else {
+            user[id].score[problemId] = -2;
+        }
+    }
+}
+void Output(int i)
+{
+    printf("%d %05d %d ", index, user[i].id, user[i].score[0]);
+    for (int j = 1; j <= k; ++ j) {
+        if (user[i].score[j] == -2) {
+            printf("0");
+        }
+        else if (user[i].score[j] == -1) {
+            printf("-");
+        }
+        else {
+            printf("%d", user[i].score[j]);
+        }
+        if (j != k) printf(" ");
+        else cout << endl;
+    }
+}
+void Print( )
+{
+    int tmp = 1;
+    Output(1);
+    for (int i = 2; i <= n; ++ i) {
+        if (user[i].score[0] <= 0 ) { //事实上可以全是0分
+            bool flag = true;
+            for (int j = 1; j <= k; j ++) {
+                if (user[i].score[j] == 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) break;
+        }
+        if (user[i].score[0] == user[i - 1].score[0]) {
+            tmp ++;
+        }
+        else {
+            index += tmp;
+            tmp = 1;
+        }
+        Output(i);
+    }
+}
+void Sort( )
+{
+    sort(user.begin() + 1, user.begin() + 1 + n, cmp);
+}
+int main()
+{
+    Init();
+    Sort();
+    Print();
+    return 0;
+}
