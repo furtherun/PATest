@@ -1,3 +1,9 @@
+//分值：
+	30
+//考察点：
+//	树的DFS遍历，树的抽象形式
+//易错点：
+//	N的最大值100，并不是最大节点索引，考虑到最坏的情况是链表，索引是指数增长的，所以不能用hashTable
 #include <iostream>
 #include <algorithm>
 #include <vector>
