@@ -1,0 +1,64 @@
+//分值：
+//	30
+//考察点：
+//	Dijkstra算法及其变形，点权和最短路径条数
+//易错点：
+//	按照模板来写很流畅，注意细节
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 505;
+const int INF = 0x3f3f3f3f;
+int n, m, startCity, endCity;
+bool visited[MAXN] = { false };
+int dis[MAXN];
+int weight[MAXN]; //点权，每个点的救援队数目
+int roadNum[MAXN], teamNum[MAXN];
+int graph[MAXN][MAXN];
+void Dijkstra(int s) {
+	fill(dis, dis + MAXN, INF);
+	fill(roadNum, roadNum + MAXN, 0);
+	fill(teamNum, teamNum + MAXN, 0);
+	dis[s] = 0, roadNum[s] = 1, teamNum[s] = weight[s];//分别初始化起始点s的距离，路径条数和点权
+	for (int i = 0; i < n; ++i) {
+		int u = -1, MIN = INF;
+		for (int j = 0; j < n; ++j) {
+			if (!visited[j] && dis[j] < MIN) {
+				u = j, MIN = dis[j];
+			}
+		}
+		if (u == -1) return;
+		visited[u] = true;
+		for (int v = 0; v < n; ++v) {
+			if (!visited[v] && graph[u][v] != INF) {
+				if (dis[u] + graph[u][v] < dis[v]) {
+					dis[v] = dis[u] + graph[u][v];
+					teamNum[v] = teamNum[u] + weight[v];
+					roadNum[v] = roadNum[u];
+				}
+				else if (dis[u] + graph[u][v] == dis[v]) {
+					if (teamNum[v] < teamNum[u] + weight[v]) {
+						teamNum[v] = teamNum[u] + weight[v];
+					}
+					roadNum[v] += roadNum[u];	//这里我第一次写错了
+				}
+			}
+		}
+	}
+}
+int main() {
+	cin >> n >> m >> startCity >> endCity;
+	for (int i = 0; i < n; ++i) {
+		cin >> weight[i];
+	}
+	fill(graph[0], graph[0] + MAXN * MAXN, INF);
+	int c1 = 0, c2 = 0;
+	for (int j = 0; j < m; ++j) {
+		cin >> c1 >> c2;
+        cin >> graph[c1][c2];
+		graph[c2][c1] = graph[c1][c2];
+	}
+	Dijkstra(startCity);
+	cout << roadNum[endCity] << " " << teamNum[endCity] << endl;
+	return 0;
+}
