@@ -1,0 +1,27 @@
+//分值：
+//	20
+//考察点：
+//	int 和 string的转换，强制类型转换static_cast<long long>，输出时名称转换的数组技巧
+//易错点：
+//	stoi()中使用的是string，也就是要用"双引号"，'单引号'的char是不可以通过的
+//  本题要求拼写英语单词0-9，需要一定的英语基本功，拼写要过关~
+#include <iostream>
+#include <algorithm>
+#include <string>
+#define LL long long
+using namespace std;
+std::string num[10] = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+int main() {
+	string s;
+	LL ret = 0;
+	cin >> s;
+	for (int i = 0; i < s.size(); ++i) {
+		ret += static_cast<long long>(s[i] - '0');	//这里为了避免vs019中后面是int而ret是LL的不能相加问题
+	}
+	s = to_string(ret);
+	for (int i = 0; i < s.size(); ++i) {
+		cout << num[s[i] - '0'];
+		i == s.size() - 1 ? cout << endl : cout << " ";
+	}
+	return 0;
+}
