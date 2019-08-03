@@ -1,0 +1,34 @@
+//分值：
+//	20
+//考察点：
+//	string的find和insert方法的使用，to_string()的使用
+//易错点：
+//	to_string()在vc++2010学习版中只支持long long 不支持int
+#include <iostream>
+#include <algorithm>
+#include <string>
+#define LL long long	//vs2010 to_string的参数只支持long long
+using namespace std;
+int main() {
+    LL a, b;
+    cin >> a >> b;
+	long long sum = a + b;
+	if (sum < 0) {	//若为 0，首先输出负号，方便后期处理位数
+		cout << "-";
+		sum = -sum;
+	}
+	string s = to_string(sum);	//该题目的技巧，int转化为string
+	int size = s.size();
+	if (size <= 3 ) {
+		cout << s << endl;	//不需要加千位分隔符的直接输出
+	} else {
+        s.insert(size - 3, ",");	//从右向左数，添加第一个千位分隔符
+        int pos = s.find(",");
+        while (pos > 3) {	//根据上一个分隔符的位置进行判断，若还需要添加，则向前移动三位
+            s.insert(pos - 3, ",");
+            pos = s.find(",");
+        }
+        cout << s << endl;
+	}
+    return 0;
+}
