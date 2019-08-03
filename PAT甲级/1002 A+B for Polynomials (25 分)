@@ -1,0 +1,41 @@
+//分值：
+//	20
+//考察点：
+//	可能想要考察链表，但是数据范围比较小，直接用hashTable存储了
+//易错点：
+//	要仔细，难度较小
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+const int MAXN = 1005;	//题意最多有10个节点，但是是幂的范围是0 to 1000
+int main() {
+
+	double list[MAXN];
+	fill(list, list + MAXN, 0.0);
+	int tmp, k1, k2;
+	double value;
+	cin >> k1;
+	for (int i = 0; i < k1; ++i) {
+		cin >> tmp;
+		cin >> value;
+		list[tmp] += value;
+	}
+	cin >> k2;
+	for (int i = 0; i < k2; ++i) {
+		cin >> tmp;
+		cin >> value;
+		list[tmp] += value;
+	}	//直接边读取，边计算
+	int cnt = 0;	//遍历，求非零节点数
+	for (int i = 0; i < MAXN; ++i) {
+		if (list[i] != 0) cnt++;
+	}
+	cout << cnt;
+	for (int i = MAXN - 1; i >= 0; --i) {	//这里是从大到小，一开始写错了没注意，编译器vs2010也没有给出提示
+		if (list[i] != 0) {
+			printf(" %d %.1f", i, list[i]);	//注意输出格式
+		}
+	}
+	return 0;
+}
