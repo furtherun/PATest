@@ -1,0 +1,54 @@
+//分值：
+//	25
+//考察点：
+//	二分法，进制转化，hash，进制转化时上下界的判断
+//易错点：
+//	初始化函数忘记调用，数据溢出
+#include <iostream>
+#include <string>
+#include <algorithm>
+#define LL long long
+using namespace std;
+const int MAXN = 256;
+LL Map[MAXN];
+void Init() {
+	for (char c = 'a'; c <= 'z'; ++c) {
+		Map[c] = static_cast<LL>(10 + c - 'a');
+	}
+	for (char c = '0'; c <= '9'; ++c) {
+		Map[c] = static_cast<LL>(c - '0');
+	}
+}
+LL ToNum10(string n1, LL radix) {
+	LL sum = 0;
+	for (int i = 0; i < n1.size(); ++i) {
+		sum = sum * radix + Map[n1[i]];
+	}
+	return sum;
+}
+LL getRadix(string n1, string n2, LL radix) {	 //假设n1为已知进制
+	LL sum = ToNum10(n1, radix);
+	LL left = static_cast<LL>(Map[*max_element(n2.begin(), n2.end())] + 1);
+	LL right = max(left, sum) + 1; 	//这个上下界很关键，因为要求最小的满足的进制
+	LL ret = -1;
+	while (left <= right) {
+		LL mid = left + (right - left) / 2;
+		LL t = ToNum10(n2, mid);
+		if (t < 0 || t > sum) right = mid - 1;
+		else if (t == sum) {
+			ret = mid;
+			break;
+		}
+		else left = mid + 1;
+	}
+	return ret;
+}
+int main() {
+	Init(); 	//第一次提交忘了调用初始化
+	string n1, n2;
+	LL tag, radix;
+	cin >> n1 >> n2 >> tag >> radix;
+	LL ret = (tag == 1 ? getRadix(n1, n2, radix) : getRadix(n2, n1, radix));
+	ret == -1 ? cout << "Impossible" << endl : cout << ret << endl;
+	return 0;
+}
