@@ -1,0 +1,32 @@
+//分值：
+//	20
+//考察点：
+//	回文串，进制转换
+//易错点：
+//	较简单，注意规范和准确性
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 50;
+int main() {
+	int dNum[MAXN];
+	int n = 0, b = 0, len = 0;
+	cin >> n >> b;
+	do {
+		dNum[len++] = n % b;
+		n /= b;
+	} while (n);
+	bool flag = true;
+	for (int i = 0; i < len / 2; ++i) {
+		if (dNum[i] != dNum[len - i - 1]) {
+			flag = false;
+			break;
+		}
+	}
+	puts(flag ? "Yes" : "No");
+	for (int i = len - 1; i >= 0; --i) {
+		cout << dNum[i];
+		i == 0 ? cout << endl : cout << " ";
+	}
+	return 0;
+}
