@@ -1,0 +1,69 @@
+//分值：
+//	25
+//考察点:
+//	多项式乘法，数据存储
+//易错点：
+//	存储结构优化，结果输出
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 15;
+class Node {
+public:
+	int n;
+	double alpha;
+	Node(double alpha_ = 0, int n_ = 0) {
+		alpha = alpha_, n = n_;
+	}
+};
+int Find(const vector<Node>& vi, int x) {
+	int pos = -1;
+	for (int i = 0; i < vi.size(); ++i) {
+		if (vi[i].n == x) {
+			pos = i;
+			break;
+		}
+	}
+	return pos;
+}
+int cmp(Node a, Node b) {
+	return a.n > b.n;
+}
+int main() {
+	Node L1[MAXN], L2[MAXN];
+	vector <Node> L3;
+	int k1 = 0, k2 = 0;
+	cin >> k1;
+	for (int i = 0; i < k1; ++i) {
+		cin >> L1[i].n >> L1[i].alpha;
+	}
+	cin >> k2;
+	for (int i = 0; i < k2; ++i) {
+		cin >> L2[i].n >> L2[i].alpha;
+	}
+	for (int i = 0; i < k1; ++i) {
+		for (int j = 0; j < k2; ++j) {
+			int n = L1[i].n + L2[j].n;
+			int index = Find(L3, n);
+			if (-1 == index) {
+				L3.push_back(Node(L1[i].alpha * L2[j].alpha, n));
+			}
+			else {
+				L3[index].alpha += L1[i].alpha * L2[j].alpha;
+			}
+		}
+	}
+	sort(L3.begin(), L3.end(), cmp);
+	int len = L3.size();
+	for (int i = 0; i < L3.size(); ++i) {
+		if (L3[i].alpha == 0) len--;
+	}
+	cout << len;
+	for (int i = 0; i < L3.size(); ++i) {
+		if (L3[i].alpha)
+			printf(" %d %.1f", L3[i].n, L3[i].alpha);
+	}
+	cout << endl;
+	return 0;
+}
