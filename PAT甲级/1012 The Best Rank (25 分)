@@ -1,0 +1,54 @@
+//分值：
+//	25
+//考察点：
+//	排序、格式化输出
+//易错点：
+//	排序的难度往往在于如何输出
+#include <iostream>
+#include <algorithm>
+#include <numeric>
+using namespace std;
+const int MAXN = 2005;
+int index = 0; //正在进行比较的科目代号
+char Map[4] = { 'A', 'C', 'M', 'E' };
+class Student {
+public:
+	int score[4]; 	//平均成绩正比于总成绩，总成绩方便计算
+	int id;
+};
+int cmp(Student a, Student b) {
+	return a.score[index] > b.score[index];
+}
+int scoreRank[1000000][4];
+int main() {
+	Student stu[MAXN];
+	fill(scoreRank[0], scoreRank[0] + 1000000 * 4, -1);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < n; ++i) {
+		cin >> stu[i].id;
+		for (int j = 1; j <= 3; ++j) {
+			cin >> stu[i].score[j];
+		}
+		stu[i].score[0] = accumulate(stu[i].score + 1, stu[i].score + 4, 0);	//总和替代平均值
+	}
+	for (index = 0; index < 4; ++index) {
+		sort(stu, stu + n, cmp);
+		scoreRank[stu[0].id][index] = 1;	//这一行一开始忘记写右值，竟然vs2019编译通过
+		for (int i = 1; i < n; ++i) {
+			if (stu[i].score[index] == stu[i - 1].score[index]) {
+				scoreRank[stu[i].id][index] = scoreRank[stu[i - 1].id][index];
+			}
+			else {
+				scoreRank[stu[i].id][index] = i + 1; //注意这里是i + 1，编号是从0开始的
+			}
+		}
+	}
+	int qId;
+	while (m--) {
+		cin >> qId;
+		int* it = min_element(scoreRank[qId], scoreRank[qId] + 4);
+		*it == -1 ? cout << "N/A" << endl : cout << *it << " " << Map[it - scoreRank[qId]] << endl;
+	}
+	return 0;
+}
