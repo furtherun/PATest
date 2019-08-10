@@ -1,0 +1,59 @@
+//分值：
+//	30
+//考察点：
+//	查找，map映射
+//易错点：
+//	技巧性较高
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+using namespace std;
+map<string, set<int>> title, author, key, publisher, year;
+void Querie(map<string, set<int>>& mp, string& val) {
+    if(mp.find(val) == mp.end()) {
+        cout << "Not Found" << endl;
+        return;
+    }
+    for (set<int>::iterator it = mp[val].begin(); it != mp[val].end(); ++ it) {
+        printf("%07d\n", *it); //id7位格式输出
+    }
+}
+int main() {
+    int n, id, m, opt;
+    cin >> n;
+    char c;
+    string tmp;
+    for (int i = 0; i < n; ++ i) {
+        cin >> id;
+        getchar(); //吸收掉回车符
+        getline(cin, tmp);
+        title[tmp].insert(id);
+        getline(cin, tmp);
+        author[tmp].insert(id);
+        while(cin >> tmp) {
+            key[tmp].insert(id);
+            c = getchar(); 	//注意要吸收掉空格
+            if (c == '\n') break;
+        }
+        getline(cin, tmp);
+        publisher[tmp].insert(id);
+        cin >> tmp;
+        year[tmp].insert(id);
+    }
+    cin >> m;
+    while (m --) {
+        scanf("%d: ", &opt);
+        getline(cin, tmp);
+		cout << opt << ": " << tmp << endl; //这一行输出容易遗漏
+       switch(opt) {
+           case 1: Querie(title, tmp); break;
+           case 2: Querie(author, tmp); break;
+           case 3: Querie(key, tmp); break;
+           case 4: Querie(publisher, tmp); break;
+           default: Querie(year, tmp); break;
+       }
+    }
+    return 0;
+}
