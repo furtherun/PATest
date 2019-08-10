@@ -1,0 +1,63 @@
+//分值：
+//	25
+//考察点：
+//	回文串、大数加法
+//易错点：
+//	大数加法的进位
+#include <iostream>
+#include <algorithm>
+#include <string>
+#define LL long long
+using namespace std;
+const int MAXN = 300;
+int isPalindromic(int* bNum, int len) {
+    bool flag = true;
+    for (int i = 0; i < len / 2; ++ i) {
+        if (bNum[i] != bNum[len - i - 1]) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}
+void Output(int* bNum, int len, int k) {
+    for (int i = len - 1; i >= 0; -- i) {
+        cout << bNum[i];
+    }
+    cout << "\n" << k << endl;
+}
+int main() {
+    int k;
+    string n;
+    int bNum[MAXN], tmp[MAXN];
+    cin >> n >> k;
+    for (int i = 0; i < n.size(); ++ i) {
+        bNum[i] = n[i] - '0';
+	}
+    int len = n.size();
+    bool flag = false;
+    for (int i = 0; i < k; ++ i) {
+        if(isPalindromic(bNum, len)) {
+            flag = true;
+            Output(bNum, len, i);
+            break;
+        } else {
+            int carry = 0;
+            for (int i = 0; i < len; ++ i) {
+				int sum = carry + bNum[i] + bNum[len - i - 1]; //BigNum求和
+                tmp[i] = sum % 10;
+                carry = sum / 10;
+            }
+            if (carry > 0) {
+                tmp[len ++] = carry;
+            }
+            for (int i = 0; i < len; ++ i) {
+                bNum[i] = tmp[i];
+            }
+        }
+    }
+    if (!flag) {
+        Output(bNum, len, k);
+    }
+    return 0;
+}
