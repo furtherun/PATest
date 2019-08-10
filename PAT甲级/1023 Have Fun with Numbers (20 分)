@@ -1,0 +1,53 @@
+//分值：
+//	20
+//考察点：
+//	大数乘法、字符统计
+//易错点：
+//	数据进位
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAXN = 25;
+int main() {
+	string num;
+	int numCount1[10], numCount2[10];
+	cin >> num;
+	reverse(num.begin(), num.end());
+	int len = num.size();
+	int bigNum[MAXN];
+	fill(bigNum, bigNum + MAXN, 0);
+	fill(numCount1, numCount1 + 10, 0);
+	fill(numCount2, numCount2 + 10, 0);
+	for (int i = 0; i < len; ++i) { 	//统计原来数据各个数字的个数
+		bigNum[i] = num[i] - '0';
+		numCount1[num[i] - '0'] ++;
+	}
+	int carry = 0; //进位
+	for (int i = 0; i <= len; ++i) {
+		int tmp = bigNum[i] * 2 + carry;
+		bigNum[i] = tmp % 10;
+		carry = tmp / 10;
+	}
+	bool flag = true;
+	if (bigNum[len]) { 	//如果变长了则无需比较了
+		len++;
+		flag = false;
+	}
+	if (flag) {
+		for (int i = 0; i < len; ++i) { 	//统计二倍后各个数字的个数
+			numCount2[bigNum[i]] ++;
+		}
+		for (int i = 0; i < 10; ++i) {
+			if (numCount2[i] != numCount1[i]) { 	//前后比较
+				flag = false;
+				break;
+			}
+		}
+	}
+	puts(flag ? "Yes" : "No");
+	for (int i = len - 1; i >= 0; --i) {
+		cout << bigNum[i];
+	}
+	return 0;
+}
