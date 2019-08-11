@@ -1,0 +1,97 @@
+//分值：
+//	25
+//考察点：
+//	并查集、DFS
+//易错点：
+//	这题有一定的数学推理，或许暴力计算也可以
+#include <iostream>
+#include <algorithm>
+#include <set>
+#include <numeric>
+#include <vector>
+using namespace std;
+const int MAXN = 10005;
+int father[MAXN];		//存储节点的根节点，负数表示该根节点连接的节点个数
+bool isRoot[MAXN], visited[MAXN];
+int n; 	//注意该题目是 1 to n，许多循环的下标要弄正确
+vector <int> graph[MAXN];
+int FindFather(int x) {
+	if (father[x] < 0) {
+		return x;
+	}
+	else {
+		return father[x] = FindFather(father[x]);	//压缩路径
+	}
+}
+void Union(int a, int b) {
+	int aRoot = FindFather(a);
+	int bRoot = FindFather(b);
+	if (aRoot == bRoot) return;		//这里要保证a和b不在同一集合中
+	if (father[aRoot] <= father[bRoot]) {
+		father[aRoot] += father[bRoot];
+		father[bRoot] = aRoot;
+	}
+	else {
+		father[bRoot] += father[aRoot];
+		father[aRoot] = bRoot;
+	}
+}
+void Init() {
+	fill(isRoot, isRoot + MAXN, false);
+	fill(father, father + MAXN, -1);	//不连通时，所有节点以自身为根节点
+}
+int getBlock() {
+	int cnt = 0;
+	for (int i = 1; i <= n; i++) {
+		if (father[i] < 0) {
+			isRoot[i] = true;
+			cnt++;
+		}
+	}
+	return cnt;
+}
+int dMax = -1;
+set <int> tmp, ans; //存储最远的节点
+void DFS(int u, int depth) {
+	visited[u] = true;
+	if (depth > dMax) {
+		tmp.clear();
+		dMax = depth;
+		tmp.insert(u);
+	}
+	else if (depth == dMax) {
+		tmp.insert(u);
+	}
+	for (int i = 0; i < graph[u].size(); ++i) {
+		if (!visited[graph[u][i]]) {
+			DFS(graph[u][i], depth + 1);
+		}
+	}
+}
+int main() {
+	Init();
+	cin >> n;
+	int a, b;
+	for (int i = 1; i < n; ++i) {
+		cin >> a >> b;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+		Union(a, b);
+	}
+	int cnt = getBlock();
+	if (cnt > 1) {
+		printf("Error: %d components\n", cnt);
+	}
+	else {
+		fill(visited, visited + MAXN, false);
+		DFS(1, 0);
+		ans = tmp;
+		fill(visited, visited + MAXN, false);
+		DFS(*ans.begin(), 0);
+		ans.insert(tmp.begin(), tmp.end());
+		for (set<int>::iterator it = ans.begin(); it != ans.end(); ++it) {
+			cout << *it << endl;
+		}
+	}
+	return 0;
+}
