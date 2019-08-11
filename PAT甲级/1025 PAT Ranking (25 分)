@@ -1,0 +1,57 @@
+分值：
+//	25
+//考察点：
+//	排序
+//易错点：
+//	容易超时
+//附注：
+//  这一题如上的代码在我的计算机不能通过，因为一开始数组分配太大，但是顺利通过了PTA上的题目
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAXN = 30001; //这个数据本机超出内存了，案例数据可以适当减少分配进行测试
+class Student {
+public:
+    string id;
+    int location, localRank, finalRank, score;
+};
+int cmp(Student a, Student b) {
+    if (a.score != b.score) return a.score > b.score;
+    else return a.id < b.id;
+}
+int main() {
+    int n, k, total = 0;
+    Student stu[MAXN];
+	cin >> n;
+    for(int i = 1; i <= n; ++ i) {
+        cin >> k;
+        for (int j = 0; j < k; ++ j) {
+            cin >> stu[total].id >> stu[total].score;
+            stu[total].location = i;
+            total ++;
+        }
+        sort(stu + total - k, stu + total, cmp);
+        stu[total - k].localRank = 1;
+        for (int j = total - k + 1; j < total; ++ j) {
+            if (stu[j].score == stu[j - 1].score) {
+                stu[j].localRank = stu[j - 1].localRank;
+            } else if (stu[j].score < stu[j - 1].score) {
+                stu[j].localRank = j - total + k + 1;
+            }
+        }
+    }
+    cout << total << endl;
+    sort(stu, stu + total, cmp);
+    stu[0].finalRank = 1;
+    cout << stu[0].id << " " << stu[0].finalRank << " " << stu[0].location << " " << stu[0].localRank << endl;
+    for (int i = 1; i < total; ++ i) {
+        if(stu[i].score == stu[i - 1].score) {
+            stu[i].finalRank = stu[i - 1].finalRank;
+        } else if (stu[i].score < stu[i - 1].score) {
+            stu[i].finalRank = i + 1;
+        }
+     	cout << stu[i].id << " " << stu[i].finalRank << " " << stu[i].location << " " << stu[i].localRank << endl;
+    }
+    return 0;
+}
