@@ -1,0 +1,96 @@
+//分值：
+//	25
+//考察点：
+//	排序、格式化输出
+//易错点：
+//	输出
+//附注：
+//一个排序题目，往往难度在于输出格式上
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAX_HOUR = 24;
+const int MAX_N = 1005;
+class Record {
+public:
+    string name;
+    int month, day, hour, minute;
+    bool state;
+    double charge;
+};
+int n;
+Record record[MAX_N];
+int toll[MAX_HOUR];
+int cmp(Record a, Record b) {
+    if (a.name != b.name) return a.name < b.name;
+    else if (a.month != b.month) return a.month < b.month;
+    else if (a.day != b.day) return a.day < b.day;
+    else if (a.hour != b.hour) return a.hour < b.hour;
+    else return a.minute < b.minute;
+}
+void getAns(int on, int off, int& time, int& money) {
+    Record tmp = record[on];
+    while (tmp.day < record[off].day || tmp.hour < record[off].hour || tmp.minute < record[off].minute) {
+        time ++;
+        money += toll[tmp.hour];
+        tmp.minute ++;
+        if (tmp.minute >= 60) {
+            tmp.hour ++;
+            tmp.minute = 0;
+        }
+        if (tmp.hour >= 24) {
+            tmp.day += 1;
+            tmp.hour = 0;
+		}
+    }
+}
+int main() {
+    string tmp;
+    for (int i = 0; i < MAX_HOUR; ++ i) {
+        cin >> toll[i];
+    }
+    cin >> n;
+    for (int i = 0; i < n; ++ i) {
+        cin >> record[i].name;
+        scanf("%d:%d:%d:%d", &record[i].month, &record[i].day, &record[i].hour, &record[i].minute);
+        cin >> tmp;
+        tmp == "on-line" ? record[i].state = true: record[i].state = false;
+    }
+    sort(record, record + n, cmp);
+    int on = 0, off, next;
+    while(on < n) {
+        int needPrint = 0;
+        next = on;
+        while (record[next].name == record[on].name) {
+            if (record[next].state == true && needPrint == 0) {
+                needPrint = 1;
+            } else if (record[next].state == false && needPrint == 1) {
+                needPrint = 2;
+            }
+            next ++;
+        }
+        if (needPrint < 2) {
+        	on = next; 	//一开始忘了这一行，导致程序无终止
+            continue;
+        }
+        int totalMoney = 0; 
+        printf("%s %02d\n", record[on].name.c_str(), record[on].month);
+        while (on < next - 1) {
+            while (on < next - 1 && !(record[on].state == true && record[on + 1].state == false)) on ++;
+            off = on + 1;
+            if (off == next) { 	//退出循环，结束一个用户的输出
+                on = next;
+                break;
+            }
+            printf("%02d:%02d:%02d %02d:%02d:%02d ",record[on].day, record[on].hour, record[on].minute, record[off].day, record[off].hour, record[off].minute);
+            int time = 0, money = 0;
+            getAns(on, off, time, money);
+            printf("%d $%.2f\n", time, money / 100.f);
+            totalMoney += money;
+            on = off + 1;
+        }
+        printf("Total amount: $%.2f\n", totalMoney / 100.f);
+    }
+    return 0;
+}
