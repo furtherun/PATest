@@ -27,3 +27,7 @@
 > 而它来自 https://blog.csdn.net/qq_30546099/article/details/71195357
 
 结果还能用，我又要愉快的写代码了
+
+### 关于warning
+0. 一般来说，就是vector和string这一类容器的size是无符号整数，for循环中和int循环变量作比较警告
+1. scanf上面也说过了，我的笔记本上win10使用vs2010学习版只是警告，vs2019则报错（必须要用scanf_s)，所以**感觉vs2019的编译难度要大于vs2010，不过后者的适应c++11标准比较弱**
