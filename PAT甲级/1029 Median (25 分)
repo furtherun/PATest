@@ -1,0 +1,37 @@
+//分值：
+//	25
+//考察点：
+//	归并
+//易错点：
+//	超时、超限， 题目限制比较严格
+#include <iostream>
+#include <queue>
+#include <algorithm>
+using namespace std;
+int main() {
+    int n, m, tmp;
+	cin >> n;
+	priority_queue<int> heap;
+    for (int i = 0; i < n; ++ i) {	//必须读入并存储的数据
+    	cin >> tmp;
+        heap.push(tmp);
+    }
+    cin >> m;	//第二组数据的大小
+    int len = (m + n - 1) / 2;	//输出数据的位置，从0开始计算，堆的size 从这里调整为len + 1
+    if (len < n) {
+        while (len + 1 < heap.size()) {
+            heap.pop();
+        }
+    } else {
+        while(heap.size() < len + 1) {
+			cin >> tmp;
+			heap.push(tmp);
+		}
+    }
+    while (cin >> tmp) {
+        heap.push(tmp);
+        heap.pop();
+    }
+    cout << heap.top() << endl;
+    return 0;
+}
