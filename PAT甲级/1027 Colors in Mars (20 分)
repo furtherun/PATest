@@ -1,0 +1,40 @@
+//分值：
+//	20
+//考察点：
+//	进制转换、字符数字转换
+//易错点：
+//	补零问题，数据范围较小，也可以穷举
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 20;
+int ToNum13(int num, int* dNum) {
+	int len = 0;
+	if (num == 0) {
+		dNum[0] = 0;
+		len = 1;
+	}
+	else {
+		do {
+			dNum[len++] = num % 13;
+			num /= 13;
+		} while (num);
+	}
+	return len;
+}
+int main() {
+	int num, len;
+	int dNum[MAXN];
+	cout << "#";
+	for (int i = 0; i < 3; ++i) {
+		cin >> num;
+		len = ToNum13(num, dNum);
+		if (len == 1) {
+			cout << "0";
+		}
+		for (int i = len - 1; i >= 0; --i) {
+			dNum[i] < 10 ? printf("%d", dNum[i]) : printf("%c", 'A' + dNum[i] - 10);
+		}
+	}
+	return 0;
+}
