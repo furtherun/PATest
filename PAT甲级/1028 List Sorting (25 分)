@@ -1,0 +1,44 @@
+//分值：
+//	25
+//考察点：
+//	结构体排序
+//易错点：
+//	一开始没注意，将cmp函数写到了结构体前面，sort出现了bug，无法确定哪个重载函数
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+const int MAXN = 100005;
+class Student {
+public:
+	int id, grade;
+	string name;
+};
+int cmpGrade(Student a, Student b) {
+	if (a.grade != b.grade) return a.grade < b.grade;
+	return a.id < b.id;
+}
+int cmpName(Student a, Student b) {
+	if (a.name != b.name) return a.name < b.name;
+	return a.id < b.id;
+}
+int cmpId(Student a, Student b) {
+	return a.id < b.id;
+}
+int main() {
+	Student stu[MAXN];
+	int n, c;
+	cin >> n >> c;
+	for (int i = 0; i < n; ++i) {
+		cin >> stu[i].id >> stu[i].name >> stu[i].grade;
+	}
+	switch (c) {
+	case 1: sort(stu, stu + n, cmpId); break;
+	case 2: sort(stu, stu + n, cmpName); break;
+	case 3: sort(stu, stu + n, cmpGrade); break;
+	}
+	for (int i = 0; i < n; ++i) {
+		printf("%06d %s %d\n", stu[i].id, stu[i].name.c_str(), stu[i].grade);
+	}
+	return 0;
+}
