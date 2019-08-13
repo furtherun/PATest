@@ -1,0 +1,42 @@
+//分值：
+//	25
+//考察点：
+//	链表合并， hash
+//易错点：
+//	输出的地址格式
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 100005;
+int main() {
+    int hashTable[MAXN]; //存储该地址的下一个位置
+    bool visited[MAXN];
+    fill(visited, visited + MAXN, false);
+    int L1, L2, n, now, next;
+    char tmp; //tmp用来吸收data，本题用不到这个参数
+    cin >> L1 >> L2 >> n;
+    for(int i = 0; i < n; ++ i) {
+        cin >> now >> tmp >> next;
+        hashTable[now] = next;
+    }
+    now = L1;
+    while (now != -1) {
+        visited[now] = true; 	//标记L1经历的所有节点
+        now = hashTable[now];
+    }
+    now = L2;
+    int ret = -1;
+    while (now != -1) {
+        if (visited[now]) {
+            if (ret == -1) {
+                ret = now;
+            }
+        } else {
+            ret = -1;
+        }
+        now = hashTable[now];
+    }
+    if (ret == -1) cout << -1 << endl;
+	else printf("%05d\n", ret);
+    return 0;
+}
