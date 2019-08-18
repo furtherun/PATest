@@ -1,0 +1,75 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <stack>
+using namespace std;
+const int MAXN = 505;
+const int INF = 0x3f3f3f3f;
+int n, m, s, e; //城市数和路径数
+int graph[MAXN][MAXN];
+int cost[MAXN][MAXN];
+int dis[MAXN]; //存储最短路径
+int c[MAXN]; //存储最小花费
+bool visited[MAXN];
+int pre[MAXN];
+void Init() {
+    cin >> n >> m >> s >> e;
+    int tmpDis, tmpCost, a, b;
+    fill(graph[0], graph[0] + MAXN * MAXN, INF);
+    fill(visited, visited + MAXN, false);
+    for(int i = 0; i < m; ++ i) {
+        cin >> a >> b >> tmpDis >> tmpCost;
+        graph[a][b] = graph[b][a] = tmpDis;
+        cost[a][b] = cost[b][a] = tmpCost;
+    }
+}
+void Dijkstra(int s) {
+    fill(dis, dis + MAXN, INF);
+    dis[s] = 0;
+    fill(c, c + MAXN, INF);
+    c[s] = 0;
+    fill(pre, pre + MAXN, -1);
+    for (int i = 0; i < n; ++ i) {
+        int u = -1, MIN = INF;
+        for (int j = 0; j < n; ++ j) {
+            if (!visited[j] && dis[j] < MIN) {
+                u = j, MIN = dis[j];
+            }
+        }
+        if (u == -1) {
+            return;
+        }
+        visited[u] = true;
+        for (int v = 0; v < n; ++ v) {
+            if (!visited[v] && graph[u][v] != INF) {
+                if (dis[u] + graph[u][v] < dis[v]) {
+                    dis[v] = dis[u] + graph[u][v];
+					c[v] = c[u] + cost[u][v];
+                    pre[v] = u;
+                } else if (dis[u] + graph[u][v] == dis[v] && c[u] + cost[u][v] < c[v]) {
+                    c[v] = c[u] + cost[u][v];
+                    pre[v] = u;
+                }
+            }
+        }
+    }
+}
+void Print() {
+    stack<int> st;
+    int tmp = e;
+    while(tmp != -1) {
+        st.push(tmp);
+        tmp = pre[tmp];
+    }
+    while (!st.empty()) {
+        printf("%d ", st.top());
+        st.pop();
+    }
+    cout << dis[e] << " " << c[e] << endl;
+}
+int main() {
+    Init();
+    Dijkstra(s);
+    Print();
+    return 0;
+}
