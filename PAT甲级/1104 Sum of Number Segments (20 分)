@@ -1,0 +1,21 @@
+//分值：
+//	20
+//考察点：
+//	找规律、数学问题
+//易错点：
+//	暴力求解会超时
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+int main() {
+    int n;
+    double tmp, ans = 0;
+    cin >> n;
+    for (int i = 1; i <= n; ++ i) {
+        cin >> tmp;
+        ans += tmp * i * (n - i + 1);
+    }
+    printf("%.2f\n", ans);
+    return 0;
+}
