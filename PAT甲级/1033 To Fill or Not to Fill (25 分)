@@ -1,0 +1,65 @@
+//分值：
+//	25
+//考察点：
+//	贪心
+//难点：
+//	逻辑比较复杂，终点标注有一定的技巧性
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 505;
+const int INF = 0x3f3f3f3f;
+class Station{
+public:
+    double position, price;
+};
+int cmp(Station a, Station b) {
+    return a.position < b.position;
+}
+int main() {
+    int n;
+    double capacity, distance, dAvg;
+    cin >> capacity >> distance >> dAvg >> n;
+    Station station[MAXN];
+    for (int i = 0; i < n; ++ i) {
+        cin >> station[i].price >> station[i].position;
+    }
+    sort(station, station + n, cmp);
+    station[n].price = 0, station[n].position = distance; 	//设置终点
+    if (station[0].position > 0) {
+        printf("The maximum travel distance = 0.00\n");
+    } else {
+        int now = 0; 	//当前所在节点下标
+        double ans = 0, nowTank = 0, \
+            MAX = dAvg * capacity; //最小花费，当前油量，满油行驶距离
+        while (now < n) {
+            int k = -1;
+            double minPrice = INF;
+            for(int i = now + 1; i <= n && station[i].position - station[now].position 
+                <= MAX; i ++) {
+                if (station[i].price < minPrice) { 	//寻找后续中最小的油价
+                    k = i, minPrice = station[i].price; //若存在加油站，k != -1
+                    if (minPrice < station[now].price) { //出现第一个比当前油价则停止
+                        break;
+                    }
+                }
+            }
+            if(k == -1) break; 	//最大行驶距离中无加油站
+            double need = (station[k].position - station[now].position) / dAvg;
+            if (station[k].price < station[now].price) { //k的价格更小, 到k补充油量
+                if (nowTank < need) { //目前油量不足抵达k
+                    ans += (need - nowTank) * station[now].price;
+                    nowTank = 0; //补充至刚刚到达k
+                } else { //当前油量可以到达k，无补油则不计算费用
+                    nowTank -= need; 	//减少所需要的油量
+                }
+            } else { //后续最小油价仍比now高，在now充满油量
+                ans += (capacity - nowTank) * station[now].price;
+                nowTank = capacity - need; //在now充满油，到达消耗need
+            }
+            now = k;
+        }
+        now == n? printf("%.2f\n", ans) : printf("The maximum travel distance = %.2f\n", station[now].position + MAX);
+    }
+    return 0;
+}
