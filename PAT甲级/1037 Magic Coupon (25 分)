@@ -1,0 +1,46 @@
+//分值：
+//	25
+//考察点：
+//	数据存储，简单数学
+//易错点：
+//	只求最大所得，不考虑损失，所以数据并不是都使用
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int getPositivePos(vector<int>& vi) {
+    int pos = vi.size();
+    for (int i = 0; i < vi.size(); ++ i) {
+        if (vi[i] >= 0) {
+            pos = i;
+            break;
+        }
+    }
+    return pos;
+}
+int main() {
+    int n, m, tmp;
+    vector <int> coupon, product;
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &tmp);
+        coupon.push_back(tmp);
+    }
+    scanf("%d", &m);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d", &tmp);
+        product.push_back(tmp);
+    }
+    sort(coupon.begin(), coupon.end());
+    sort(product.begin(), product.end());
+    int ans = 0, cPos = getPositivePos(coupon), pPos = getPositivePos(product);
+    for (int i = 0; i < min(cPos, pPos); ++ i) { 	//负数部分
+        ans += coupon[i] * product[i];
+    }
+    for (int i = coupon.size() - 1, j = product.size() - 1; \
+        i >= cPos && j >= pPos; -- i, -- j) {	 //正数部分
+        ans += coupon[i] * product[j];
+    }
+    printf("%d\n", ans);
+    return 0;
+}
