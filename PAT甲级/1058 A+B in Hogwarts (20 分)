@@ -1,0 +1,28 @@
+//分值：
+//	20
+//考察点：
+//	进制加法
+//易错点：
+//	每一位的进位不同，最高位无需进位所以要设一个很大的数
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 3;
+const int INF = 0X7ffffff;
+int main() {
+    int arr[MAXN], seq[MAXN];
+    int weight[MAXN] = {29, 17, INF};
+    scanf("%d.%d.%d", &arr[2], &arr[1], &arr[0]);
+    scanf("%d.%d.%d", &seq[2], &seq[1], &seq[0]);
+    int carry = 0;
+    for (int i = 0; i < MAXN; ++ i) {
+        int tmp = arr[i] + seq[i] + carry;
+        carry = tmp / weight[i];
+        arr[i] = tmp % weight[i];
+    }
+    for (int i = MAXN - 1; i >= 0; -- i) {
+        printf("%d", arr[i]);
+        i == 0? cout << endl: cout << ".";
+    }
+    return 0;
+}
