@@ -1,0 +1,33 @@
+//分值：
+//	25
+//考察点：
+//	two points
+//说明：
+//本题使用two points 、二分法或是hash都可以
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 100005;
+int main() {
+    int n, amount;
+    int arr[MAXN];
+    scanf("%d %d", &n, &amount);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &arr[i]);
+    }
+    sort(arr, arr + n);
+    int i = 0, j = n - 1;
+    while (i < j) {
+        int sum = arr[i] + arr[j];
+        if (arr[i] + arr[j] == amount) {
+            printf("%d %d\n", arr[i], arr[j]);
+            break;
+        } else if (sum < amount) {
+            ++ i;
+        } else {
+            -- j;
+        }
+    }
+    if (i >= j) printf("No Solution\n");
+    return 0;
+}
