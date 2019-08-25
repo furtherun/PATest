@@ -1,0 +1,24 @@
+//考察点：
+//	字符串的应用
+//易错点：
+//	再次强调，每次出现都必定要说明，to_string在这里只能用于LL
+#include <iostream>
+#include <algorithm>
+#include <string>
+#define LL long long
+using namespace std;
+int main() {
+    string n1, n2;
+    cin >> n1;
+    while (true) {
+        while (n1.size() < 4) n1 = "0" + n1;
+        sort(n1.begin(), n1.end());
+        n2 = n1;
+        reverse(n2.begin(), n2.end());
+        LL tmp = stoi(n2) - stoi(n1);
+        printf("%s - %s = %04lld\n", n2.c_str(), n1.c_str(), tmp);
+        if (tmp == 0 || tmp == 6174) break;
+        n1 = to_string(tmp);
+    }
+    return 0;
+}
