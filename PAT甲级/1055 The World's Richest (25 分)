@@ -1,0 +1,55 @@
+//考察点：
+//  排序，预处理
+//易错点：
+//  直接排序会超时
+//  经过实例的预处理后，发现段错误，应当将较大的数组放在全局变量中，临时变量是放在栈区的，大小限制比较严格
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAX_PERSON = 100005;
+const int MAX_AGE = 405;
+class Person {
+public:
+    string name;
+    int age, worth;
+    bool flag;
+};
+int age[MAX_AGE];
+Person person[MAX_PERSON], valid[MAX_PERSON]; //数组要放在全局变量中，否则出现段错误
+int cmp(Person& a, Person& b) {
+    if (a.worth != b.worth) return a.worth > b.worth;
+    else if (a.age != b.age) return a.age < b.age;
+    else return a.name < b.name;
+}
+int main() {
+    int n, k;
+    scanf("%d %d",&n, &k);
+    for (int i = 0; i < n; ++ i) {
+        cin >> person[i].name;
+        scanf("%d %d", &person[i].age, &person[i].worth);
+    }
+    sort(person, person + n, cmp);
+    int validNum = 0;
+    for (int i = 0; i < n; ++ i) {
+        if (age[person[i].age] < 100) {		//按照题目要求保留每个年龄中的前100人
+            age[person[i].age] ++;
+            valid[validNum ++] = person[i];
+        }
+    }
+    int m, minAge, maxAge;
+    for (int i = 1; i <= k; ++ i) {
+        scanf("%d %d %d", &m, &minAge, &maxAge);
+        printf("Case #%d:\n", i);
+        int cnt = 0;
+        for (int j = 0;cnt < m && j < validNum; ++ j) {
+            if (valid[j].age <= maxAge && valid[j].age >= minAge) {
+                printf("%s %d %d\n", valid[j].name.c_str(), valid[j].age, \
+                      valid[j].worth);
+                cnt ++;
+            }
+        }
+        if (cnt == 0) printf("None\n");
+    }
+    return 0;
+}
