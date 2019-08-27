@@ -1,0 +1,37 @@
+//考察点：
+//	集合的操作
+//易错点：
+//	c语言%号的输出，连续写两个%即可，而不是使用转义字符
+//	当然也可以使用cout输出，不过感觉有些丑
+//	set_insection 和set_union不会使用，或者是忘记写头文件iterator
+//	而导致两个函数的inserter部分报错
+#include <iostream>
+#include <algorithm>
+#include <set>
+#include <iterator>
+using namespace std;
+const int MAXN = 55;
+int main() {
+    int n, size, tmp;
+    set<int> st[MAXN];
+    scanf("%d", &n);
+    for (int i = 1; i <= n; ++ i) {
+        scanf("%d", &size);
+        while (size --) {
+            scanf("%d", &tmp);
+            st[i].insert(tmp);
+        }
+    }
+    int q, a, b;
+    scanf("%d", &q);
+    while (q --) {
+        set <int> setC, setT;
+        scanf("%d %d", &a, &b);
+        set_intersection(st[a].begin(), st[a].end(), st[b].begin(), st[b].end(),\
+                        inserter(setC, setC.end()));
+      	set_union(st[a].begin(), st[a].end(), st[b].begin(), st[b].end(),\
+                  inserter(setT,setT.end()));
+        printf("%.1f%%\n", setC.size() * 100.0/ setT.size());
+    }
+    return 0;
+}
