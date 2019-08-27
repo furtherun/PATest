@@ -60,3 +60,67 @@ int main() {
     }
     return 0;
 }
+//树状数组法
+#include <iostream>
+#include <stack>
+#include <string>
+#define lowbit(i) (i & -(i))
+using namespace std;
+const int MAXN = 100005;
+int c[MAXN]; //树状数组,存储x的数目
+stack <int> st;
+int getSum(int x) {
+    int sum = 0;
+    for (int i = x; i > 0; i -= lowbit(i)) { //注意这里下标从1开始 
+        sum += c[i]; 	//i -= lowbit(i)一开始笔误
+    }
+    return sum;
+}
+void update(int x, int v) {
+    for (int i = x; i <= MAXN; i += lowbit(i)) {
+        c[i] += v;
+    }
+}
+void PeekMedian(int K) { 	//输出第k大的数
+    int left = 1, right = MAXN;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (getSum(mid) >= K) right = mid;
+        else left = mid + 1;
+    }
+    printf("%d\n", left); //注意输出
+}
+inline void Push(int v) {
+    st.push(v);
+   	update(v, 1);
+}
+inline void Pop() {
+    printf("%d\n", st.top());
+    update(st.top(), -1);
+    st.pop();
+}
+int main() {
+    string opt;
+    int n, tmp;
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++ i) {
+        cin >> opt;
+        if (opt == "Push") {
+            scanf("%d", &tmp);
+            Push(tmp);
+        } else if (opt == "Pop") {
+            if (st.empty()) {
+                printf("Invalid\n");
+            } else {
+                Pop();
+            }
+        } else {
+            if (st.empty()) {
+                printf("Invalid\n");
+            } else {
+                PeekMedian((st.size() + 1) / 2);
+            }
+        }
+    }
+    return 0;
+}
