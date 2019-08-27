@@ -1,0 +1,62 @@
+//考察点：
+//	分块查找，栈的应用
+//易错点：
+//	暴力求解容易超时
+#include <iostream>
+#include <algorithm>
+#include <stack>
+#include <string>
+using namespace std;
+const int MAXN = 100005;
+const int MAX_BLOCK = 316;
+stack<int> st;
+int block[MAX_BLOCK] = {0}; 	//存储每个块的数据数目
+int hashTable[MAXN] = {0}; 	//存储每个数据的数目
+void PeekMedian(int K) { 	//输出第k大的数
+    int sum = 0, id = 0; //sum为遍历过块中的数据总数，id为当前遍历的块号
+    while (sum + block[id] < K) { //找到第k大的数据所在的块
+        sum += block[id ++];
+    }
+    int num = id * MAX_BLOCK; //确定第k大数据所在的块，求出该块的第一个元素
+    while (sum + hashTable[num] < K) { //块内查找
+        sum += hashTable[num ++];
+    }
+    printf("%d\n", num);
+}
+void Push(int v) {
+    st.push(v);
+    block[v / MAX_BLOCK] ++;
+    hashTable[v] ++;
+}
+void Pop() {
+	int v = st.top();
+    printf("%d\n", v);
+    st.pop();
+    block[v / MAX_BLOCK] --;
+    hashTable[v] --;
+}
+int main() {
+    string opt;
+    int n, tmp;
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++ i) {
+        cin >> opt;
+        if (opt == "Push") {
+            scanf("%d", &tmp);
+            Push(tmp);
+        } else if (opt == "Pop") {
+            if (st.empty()) {
+                printf("Invalid\n");
+            } else {
+                Pop();
+            }
+        } else {
+            if (st.empty()) {
+                printf("Invalid\n");
+            } else {
+                PeekMedian((st.size() + 1) / 2);
+            }
+        }
+    }
+    return 0;
+}
