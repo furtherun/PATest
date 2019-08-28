@@ -1,0 +1,61 @@
+//考察点：
+//	字符串处理
+//易错点：
+//	忘记处理前导零
+//	各种边界情况都要考虑全面
+//	有一定的技巧性
+//说明：
+//	很有必要学会调试程序
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+int n; //精度
+string deal(string s, int& e) {
+    int k = 0;
+    while (s.size() > 0 && s[0] == '0') { //清除前导零
+        s.erase(s.begin());
+    }
+    if (s.size() == 0) { //为0
+        e = 0;
+    } else if (s[0] == '.') { // < 1
+        s.erase(s.begin());
+        while (s.size() && s[0] == '0') {
+			s.erase(s.begin()); //一开始漏掉了这句清除
+            e --;
+        }
+        if (s.size() == 0) { //带小数点的0 如0.000
+            e = 0;
+        }
+    } else { // >= 1
+        while (k < s.size() && s[k] != '.') { //寻找小数点
+            k ++; //第一次忘记
+        	e ++;
+        }
+        if(k < s.size()) {
+            s.erase(s.begin() + k);
+        }
+    }
+    k = 0;
+    int num = 0;
+    string res;
+    while (num < n) {
+        k < s.size() ? res += s[k ++] : res += '0';
+        num ++;
+    }
+    return res;
+}
+int main() {
+    int e1 = 0, e2 = 0;
+    string num1, num2, res1, res2;
+    scanf("%d", &n);
+    cin >> num1 >> num2;
+    res1 = deal(num1, e1);
+    res2 = deal(num2, e2);
+    if (res1 == res2 && e1 == e2) {
+        printf("YES 0.%s*10^%d\n", res1.c_str(), e1);
+    } else {
+        printf("NO 0.%s*10^%d 0.%s*10^%d\n", res1.c_str(), e1, res2.c_str(), e2);
+    }
+    return 0;
+}
