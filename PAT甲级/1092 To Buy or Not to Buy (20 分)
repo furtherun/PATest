@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+using namespace std;
+const int MAXN = 256;
+int main() {
+    int hashTable[MAXN] = {0};
+    string str, s;
+    cin >> str >> s;
+    for (int i = 0; i < str.size(); ++ i) {
+        hashTable[str[i]] ++;
+    }
+    bool flag = true;
+    int cnt = 0; //缺少的数量
+    for (int i = 0; i < s.size(); ++ i) {
+        hashTable[s[i]] --;
+        if(hashTable[s[i]] < 0) {
+            flag = false;
+            cnt ++;
+        }
+    }
+    if (flag) {
+        printf("Yes %d\n", str.size() - s.size());
+    } else {
+        printf("No %d\n", cnt);
+    }
+}
