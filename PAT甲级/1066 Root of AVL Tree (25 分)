@@ -1,0 +1,85 @@
+//考察点：
+//	AVL树的操作
+//易错点：
+//	过程比较复杂，容易漏掉一些小细节
+#include <iostream>
+#include <algorithm>
+using namespace std;
+class Node {
+public:
+    int value, height;
+    Node* lchild, *rchild;
+};
+Node* NewNode(int v) {
+    Node* n = new Node;
+    n->value = v;
+    n->height = 1;
+    n->lchild = n->rchild = nullptr;
+    return n;
+}
+int getHeight(Node* root) {
+    if (!root) return 0; //空节点要设为0，容易遗漏掉
+    return root->height;
+}
+void UpdateHeight(Node*& root) {
+    root->height = max(getHeight(root->lchild), getHeight(root->rchild)) + 1;
+}
+int getBalanceFactor(Node* root) {
+    return getHeight(root->lchild) - getHeight(root->rchild);
+}
+void LeftRotation(Node*& root) {
+    Node* tmp = root->rchild;
+    root->rchild = tmp->lchild;
+    tmp->lchild = root;
+    UpdateHeight(root); //调整后，root下降，tmp上升
+    UpdateHeight(tmp);
+    root = tmp; 	//重新定义根节点
+}
+void RightRotation(Node*& root) {
+    Node* tmp = root->lchild;
+    root->lchild = tmp->rchild;
+    tmp->rchild = root;
+    UpdateHeight(root);
+    UpdateHeight(tmp);
+    root = tmp;
+}
+void Insert(Node*& root, int v) {
+    if (!root) {
+        root = NewNode(v);
+        return;
+    }
+    if (v < root->value) {
+        Insert(root->lchild, v);
+        UpdateHeight(root);
+        if (getBalanceFactor(root) == 2) {
+            if (getBalanceFactor(root->lchild) == 1) { //LL
+                RightRotation(root);
+            } else { //LR
+                LeftRotation(root->lchild);
+                RightRotation(root);
+            }
+        }
+    } else {
+        Insert(root->rchild, v);
+        UpdateHeight(root);
+        if (getBalanceFactor(root) == -2) {
+            if (getBalanceFactor(root->rchild) == -1) { //RR
+                LeftRotation(root);
+            } else { //RL 
+                RightRotation(root->rchild);
+                LeftRotation(root);
+            }
+        }
+    }
+}
+int main() {
+    int n, tmp;
+    scanf("%d", &n);
+    Node* root = nullptr;
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &tmp);
+        Insert(root, tmp);
+    }
+    printf("%d\n", root->value);
+    return 0;
+}
