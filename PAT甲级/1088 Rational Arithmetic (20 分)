@@ -1,0 +1,80 @@
+//考察点：
+//	分数运算
+//易错点：
+//	一些细节，比如÷0，负数输出，格式
+//	乘法使用int 会溢出
+//说明：
+//	分数运算也应该有个模板，顺便为了简洁，写了用函数指针压缩了一部分写了循环
+//	感觉这题应该不止20分，笔记代码量挺大的
+#include <iostream>
+#include <algorithm>
+#define LL long long
+using namespace std;
+LL GCD(LL a, LL b) {
+    return b == 0? a: GCD(b, a % b);
+}
+class Num { //分数，符号由分子体现
+public:
+    LL up, down;
+    Num(LL u = 0, LL d = 1) {
+        up = u, down = d;
+        if(down < 0) { //分母为0，将负号转移到分子
+            up *= -1, down *= -1;
+        }
+		if (up == 0) { //规定 0 写为 0/1
+			down = 1;
+		} else { //最大公因数化简
+            LL m = (up > 0? GCD(up, down): GCD(-up, down));
+            up /= m, down /= m;
+        }
+    }
+};
+Num Add(Num a, Num b) {
+    Num n(a.up * b.down + a.down * b.up, b.down * a.down);
+    return n;
+}
+Num Sub(Num a, Num b) {
+    Num n(a.up * b.down - a.down * b.up, b.down * a.down);
+    return n;
+}
+Num Mul(Num a, Num b) {
+    Num n(a.up * b.up, a.down * b.down);
+    return n;
+}
+Num Div(Num a, Num b) {
+    Num n(a.up * b.down, a.down * b.up);
+    return n;
+}
+void ShowNum(Num a) {
+    if (a.up < 0) printf("(");
+    if (a.down == 1) printf("%lld", a.up);
+    else if (abs(a.up) > a.down) {
+        printf("%lld %lld/%lld", a.up/a.down, abs(a.up)% a.down, a.down);
+    } else {
+        printf("%lld/%lld", a.up, a.down);
+    }
+    if (a.up < 0) {
+        printf(")");
+    }
+}
+int main() {
+	LL a1, b1, a2, b2; //一开始这里忘记修改，总是有stack around the variable was corrupted错误
+    scanf("%lld/%lld %lld/%lld", &a1, &b1, &a2, &b2);
+    Num n1(a1, b1), n2(a2, b2);
+    char arr[4] = {'+', '-', '*', '/'};
+    typedef Num (*fp) (Num, Num);
+    fp func[4] = {Add, Sub, Mul, Div};
+    for (int i = 0; i < 4; ++ i) {
+        ShowNum(n1);
+        printf(" %c ", arr[i]);
+        ShowNum(n2);
+        printf(" = ");
+        if (i == 3 && n2.up == 0) {
+            printf("Inf\n");
+            break;
+        }
+        ShowNum(func[i](n1, n2));
+        printf("\n");
+    }
+    return 0;
+}
