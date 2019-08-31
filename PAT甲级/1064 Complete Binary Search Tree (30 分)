@@ -1,0 +1,31 @@
+//考察点：
+//	完全二叉树，BST，静态二叉树
+//易错点：
+//	没有注意到两者之间的关联
+//	有序存储，要想到BST中序遍历是有序的
+//	然后还需要借助CBT的存储技巧来进行中序遍历保存
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 1005;
+int CBT[MAXN], arr[MAXN];
+int n, index = 1;
+void inorder(int root) {
+    if (root > n) return;
+    inorder(root * 2); //左子树递归
+    CBT[root] = arr[index ++];
+    inorder(root * 2 + 1); //右子树递归
+}
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; ++ i) {
+        scanf("%d", &arr[i]);
+    }
+    sort(arr + 1, arr + n + 1);
+    inorder(1);
+    for (int i = 1; i <= n; ++ i) {
+        printf("%d", CBT[i]);
+        printf(i == n? "\n": " ");
+    }
+    return 0;
+}
