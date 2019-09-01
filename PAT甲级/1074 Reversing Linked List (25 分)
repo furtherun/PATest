@@ -1,0 +1,39 @@
+//考察点：
+//	链表的逆序
+//易错点：
+//	只要是链表题目，就需要考虑不在链表的点要先排除掉
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 100000;
+class Node {
+public:
+    int data, next;
+};
+int main() {
+    int headAddress, nodeNum, k, address;
+    scanf("%d %d %d", &headAddress, &nodeNum, &k);
+    Node nodeTable[MAXN];
+    for (int i = 0; i < nodeNum; ++ i) {
+        scanf("%d", &address);
+        scanf("%d %d", &nodeTable[address].data, &nodeTable[address].next);
+    }
+    vector<int> addressLine, dataLine;
+    int t = headAddress, cnt = 0;
+    while (t != -1) {
+        addressLine.push_back(t);
+        dataLine.push_back(nodeTable[t].data);
+        t = nodeTable[t].next;
+    }
+    int len = addressLine.size();
+    for (int i = 0; i + k <= len; i += k) {
+        reverse(addressLine.begin() + i, addressLine.begin() + i + k);
+        reverse(dataLine.begin() + i, dataLine.begin() + i + k); //这里有一个笔下误，debug好久
+    }
+    for (int i = 0; i < len - 1; ++ i) {
+        printf("%05d %d %05d\n", addressLine[i], dataLine[i], addressLine[i + 1]);
+    }
+    printf("%05d %d -1\n", addressLine[len - 1], dataLine[len - 1]);
+    return 0;
+}
