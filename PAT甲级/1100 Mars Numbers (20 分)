@@ -1,0 +1,47 @@
+//考察点：
+//	进制转换，格式输出
+//易错点：
+//	因为13的倍数输出格式和其余的数字有些差异，且数据范围较小
+//	不如使用打表的方式
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+string marDigit[13] = {"tret", "jan", "feb", "mar", "apr", "may",\
+    "jun", "jly", "aug", "sep", "oct", "nov", "dec"};
+string marHigherDigit[13] = {"tret", "tam", "hel", "maa", "huh", "tou", "kes",\
+    "hei", "elo", "syy", "lok", "mer", "jou"};
+int main() {
+    map<int, string> intToStr;
+    map<string, int> strToInt;
+    for (int i = 0; i < 13; ++ i) {
+        intToStr[i] = marDigit[i]; //mar 高位为0
+        strToInt[marDigit[i]] = i;
+        intToStr[i * 13] = marHigherDigit[i];
+        strToInt[marHigherDigit[i]] = i * 13; //mar 低位为0
+    }
+    for (int i = 1; i < 13; ++ i) {
+        for (int j = 1; j < 13; ++ j) {
+            intToStr[i * 13 + j] = intToStr[i * 13] + " " + marDigit[j];
+            strToInt[intToStr[i * 13 + j]] = i * 13 + j;
+        }
+    }
+    int n;
+    scanf("%d", &n);
+	getchar();
+    string tmp;
+    while (n --) {
+        getline(cin, tmp);
+        if(isdigit(tmp[0])) {
+            int num = 0;
+            for (int i = 0; i < tmp.size(); ++ i) {
+                num = num * 10 + tmp[i] - '0';
+            }
+            cout << intToStr[num] << endl;
+        } else {
+            cout << strToInt[tmp] << endl;
+        }
+    }
+    return 0;
+}
