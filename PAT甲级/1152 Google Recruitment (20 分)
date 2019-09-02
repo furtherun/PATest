@@ -1,0 +1,47 @@
+//考察点：
+//	素数，字符串的操作
+//易错点：
+//	忽略了输出前导零，题目结尾部分有提及
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <cmath>
+using namespace std;
+int ToNum(string s) {
+    int num = 0;
+    for (int i = 0; i < s.size(); ++ i) {
+        num = num * 10 + s[i] - '0';
+    }
+    return num;
+}
+bool isPrime(int x) {
+    if (x <= 1) return false;
+    if (x != 2 && x % 2 == 0) return false;
+    else {
+        int limit = (int)sqrt((double)x) + 1;
+        for (int i = 3; i <= limit; i += 2) {
+            if (x % i == 0) return false;
+        }
+    }
+    return true;
+}
+int main() {   
+    int len, k, num = 0;
+    scanf("%d %d", &len, &k);
+    string str;
+    cin >> str;
+    bool flag = false; //初始长度不足计算, 直接失败
+    if (k <= len) {
+       for (int i = 0; i + k <= len; ++ i) {
+           string sub(str, i, k);
+           if (isPrime(ToNum(sub))) {
+               cout << sub << endl;
+               flag = true;
+               break;
+           }
+           sub.clear();
+       }
+    }
+    if (!flag) printf("404\n");
+    return 0;
+}
