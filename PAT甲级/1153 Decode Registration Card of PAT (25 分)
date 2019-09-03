@@ -1,0 +1,94 @@
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
+#include <vector>
+#include <string>
+using namespace std;
+class Student {
+public:
+    string id;
+    int grade;
+};
+class Site {
+public:
+    string siteId;
+    int num;
+    Site(string s = 0, int n = 0) {
+        siteId = s, num = n;
+    } 
+};
+int cmp1(const Student& a, const Student& b) {
+    if (a.grade != b.grade) return a.grade > b.grade;
+    else return a.id < b.id;
+}
+int cmp3(const Site& a, const Site& b) {
+    if (a.num != b.num) return a.num > b.num;
+    else return a.siteId < b.siteId;
+}
+int main() {
+    int n, q, opt;
+    scanf("%d %d", &n, &q);
+    vector<Student> stu(n);
+    for (int i = 0; i < n; ++ i) {
+        cin >> stu[i].id >> stu[i].grade;
+    }
+    string term;
+    for (int i = 1; i <= q; ++ i) {
+        cin >> opt >> term;
+        printf("Case %d: %d %s\n", i, opt, term.c_str());
+        if (opt == 1) {
+            vector <Student> vi;
+            for (int j = 0; j < n; ++ j) {
+                if (stu[j].id[0] == term[0]) { //注意这里应该是字符相比较
+                    vi.push_back(stu[j]);
+                }
+            }
+            if (vi.empty()) {
+                printf("NA\n");
+            } else {
+                sort(vi.begin(), vi.end(), cmp1);
+                for (int j = 0; j < vi.size(); ++ j) {
+                    printf("%s %d\n", vi[j].id.c_str(), vi[j].grade);
+                }
+            }
+        } else if (opt == 2) {
+            int num = 0, sum = 0;
+            for (int j = 0; j < n; ++ j) {
+                if (stu[j].id.substr(1, 3) == term) { //符合目标地点
+                    num ++;
+                    sum += stu[j].grade;
+                }
+            }
+            if (num) {
+                printf("%d %d\n", num, sum);
+            } else {
+                printf("NA\n");
+            }
+        } else if (opt == 3) {
+            vector <Site> vi;
+            unordered_map<string, int> mp;
+            for (int j = 0; j < n; ++ j) {
+                if (stu[j].id.substr(4, 6) == term) {
+                    if (mp.find(stu[j].id.substr(1, 3)) != mp.end()) {
+                        mp[stu[j].id.substr(1, 3)] ++;
+                    } else {
+                        mp[stu[j].id.substr(1, 3)] = 1;
+                    }
+                }
+            }
+            for (unordered_map<string, int>::iterator it = mp.begin();\
+                 it != mp.end(); ++ it) {
+                vi.push_back(Site(it->first, it->second));
+            }
+            if (vi.empty()) {
+                printf("NA\n");
+            } else {
+                sort(vi.begin(), vi.end(), cmp3);
+                for (int j = 0; j < vi.size(); ++ j) {
+                    printf("%s %d\n", vi[j].siteId.c_str(), vi[j].num);
+                }
+            }
+        }
+    }
+    return 0;
+}
