@@ -1,0 +1,39 @@
+//说明：
+//	这题不难，就是我想多了，不知咋回事，还想到BFS上去了，结果有一个比较大的数据要么超时，要么超内存。
+//这题就是要判断图中任意相邻两点是否同色问题，相邻两点要转化为一条边上的两点，这个要是没发现的话，暴力求解就会有一个点过不去。
+#include <iostream>
+#include <algorithm>
+#include <unordered_set>
+#include <vector>
+using namespace std;
+class Node {
+public:
+    int x, y;
+};
+unordered_set<int> st;
+int main() {
+    int n, m, k;
+    scanf("%d %d", &n, &m);
+    vector <Node> edge(m);
+    vector <int> color(n);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d %d", &edge[i].x, &edge[i].y);
+    }
+    scanf("%d", &k);
+    while (k --) {
+        bool flag = true;
+        for (int i = 0; i < n; ++ i) {
+            scanf("%d", &color[i]);
+            st.insert(color[i]);
+        }
+        for (int i = 0; i < m; ++ i) {
+            if (color[edge[i].x] == color[edge[i].y]) {
+                flag = false;
+                break;
+            }
+        }
+        flag? printf("%d-coloring\n", st.size()): printf("No\n");
+        st.clear();
+    }
+    return 0;
+}
