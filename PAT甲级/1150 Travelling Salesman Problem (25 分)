@@ -1,0 +1,60 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <unordered_set>
+using namespace std;
+const int MAXN = 205;
+const int INF = 0X3F3F3F3F;
+int graph[MAXN][MAXN];
+int main() {
+    fill(graph[0], graph[0] + MAXN * MAXN, INF);
+    int n, m, a, b, tmp;
+    scanf("%d %d", &n, &m);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d %d %d", &a, &b, &tmp);
+        graph[a][b] = graph[b][a] = tmp;
+    }
+    scanf("%d", &m);
+    int u = -1, minTotalDist = INF;
+    for (int k = 1; k <= m; ++ k) {
+        int cnt;
+        scanf("%d", &cnt);
+        vector <int> vi(cnt);
+        unordered_set <int> st;
+        for (int i = 0; i < cnt; ++ i) {
+            scanf("%d", &vi[i]);
+            st.insert(vi[i]);
+        }
+        bool isTSCycle = true;
+        int totalDist = 0;
+        for (int i = 1; i < cnt; ++ i) {
+            int tmpDist = graph[vi[i - 1]][vi[i]];
+            if (tmpDist != INF) {
+                totalDist += tmpDist;
+            } else {
+                totalDist = INF;
+                isTSCycle = false;
+                break;
+            }
+        }
+        printf("Path %d:", k);
+        if (st.size() < n || vi.front() != vi.back()) {
+            isTSCycle = false;
+        }
+        if (isTSCycle) {
+            printf(" %d ", totalDist);
+            printf(vi.size() == n + 1? "(TS simple cycle)\n": "(TS cycle)\n");
+            if (totalDist < minTotalDist) {
+                u = k, minTotalDist = totalDist;
+            }
+        } else {
+            if (totalDist == INF) {
+                printf(" NA (Not a TS cycle)\n");
+            } else {
+                printf(" %d (Not a TS cycle)\n", totalDist);
+            }
+        }
+    }
+    printf("Shortest Dist(%d) = %d\n", u, minTotalDist); //题目保证有解且唯一
+    return 0;
+}
