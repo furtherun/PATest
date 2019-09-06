@@ -1,0 +1,40 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 1015;
+int m, n;
+vector <int> heap(MAXN);
+vector <int> post;
+bool isMinHeap, isMaxHeap;
+void Postorder(int s) {
+    if (s > n) return;
+    if (s > 1 && heap[s/2] > heap[s]) {
+        isMinHeap = false;
+    } else if (s > 1 && heap[s / 2] < heap[s]) {
+        isMaxHeap = false;
+    }
+    Postorder(2 * s);
+    Postorder(2 * s + 1);
+    post.push_back(heap[s]);
+}
+int main() {
+    scanf("%d %d", &m, &n);
+    while (m --) {
+        isMaxHeap = isMinHeap = true;
+        for (int i = 1; i <= n; ++ i) {
+            scanf("%d", &heap[i]); //层序输入
+        }
+        Postorder(1);
+        if (!isMinHeap && !isMaxHeap) {
+            printf("Not Heap\n");
+        } else if (isMinHeap) printf("Min Heap\n");
+        else printf("Max Heap\n");
+        for (int i = 0; i < n; ++ i) {
+            printf("%d", post[i]);
+            printf(i == n - 1? "\n": " ");
+        }
+        post.clear();
+    }
+    return 0;
+}
