@@ -1,0 +1,68 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+#include <numeric>
+using namespace std;
+int getNextPrime(int x) {
+    if (x <= 2) return 2;
+    if (x % 2 == 0) x ++; //偶数变奇数
+    bool flag = false;
+    while (!flag) {
+        flag = true;
+        int limit = (int)sqrt(1.f * x) + 1;
+        for (int i = 3; i <= limit; i += 2) {
+            if (x % i == 0) {
+                x += 2;
+                flag = false;
+                break;
+            }
+        }
+    }
+    return x;
+}
+int Hash(int x, int key) {
+    return x % key;
+}
+void Insert(int x, vector<int>& hashTable, vector<bool>& visited, int size) {
+    int i, pos;
+    for (i = 0; i < size; ++ i) {
+        pos = Hash(x + i * i, size);
+        if (!visited[pos]) {
+            hashTable[pos] = x;
+            visited[pos] = true;
+            break;
+        }
+    }
+    if (i == size) {
+        printf("%d cannot be inserted.\n", x);
+    }
+}
+int Find(int x, vector<int>& hashTable, vector<bool>& visited, int size) {
+    int i, pos;
+    for (i = 0; i < size; ++ i) {
+        pos = Hash(x + i * i, size);
+        if (!visited[pos] || (hashTable[pos] == x) ) {
+            break;
+        }
+    }
+    return i + 1;
+}
+int main() {
+    int size, n, m, tmp;
+    scanf("%d %d %d", &size, &n, &m);
+    size = getNextPrime(size);
+    vector <int> hashTable(size);
+    vector <bool> visited(size, false);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &tmp);
+        Insert(tmp, hashTable, visited, size);
+    }
+    vector <int> avgSearchTime(m);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d", &tmp);
+        avgSearchTime[i] = Find(tmp, hashTable, visited, size);
+    }
+    printf("%.1f\n", accumulate(avgSearchTime.begin(), avgSearchTime.end(), 0) * 1.0 / m);
+    return 0;
+}
