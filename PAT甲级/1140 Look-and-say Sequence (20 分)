@@ -1,0 +1,26 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#define LL long long
+using namespace std;
+int main() {
+    string str; //本题模拟的是一种编码方式，就是一个字符+数字，数字是该字符连续出现的次数
+    int n;
+    cin >> str >> n;
+    for (int i = 1; i < n; ++ i) { //注意序列下标从1开始
+        int idx = 0;
+        string tmp;
+        while (idx < str.size()) {
+            tmp += str[idx]; //字符
+            int cnt = 1;
+            while (idx + cnt < str.size() && str[idx + cnt] == str[idx]) {
+                cnt ++;
+            }
+            tmp += to_string((LL)cnt); //连续字符数目
+            idx += cnt;
+        }
+        str = tmp;
+    }
+    cout << str << endl;
+    return 0;
+}
