@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <map>
+using namespace std;
+int main() {
+    int m, n, a, b, value;
+    scanf("%d %d", &m, &n);
+    vector <int> pre(n);
+    map <int, bool> visited; //虽然n给了范围，但是数据不是从1ton的，这里需要map来标注状态
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &pre[i]); //先序序列
+        visited[pre[i]] = true; //存在该节点
+    }
+    while (m --) {
+        scanf("%d %d", &a, &b);
+        for (int i = 0; i < n; ++ i) {
+            value = pre[i];
+            if (value >= min(a, b) && value <= max(a, b)) {
+                break; //a b 分别位于节点的两侧
+            }
+        }
+        if(!visited[a] && !visited[b]) {
+            printf("ERROR: %d and %d are not found.\n", a, b);
+        } else if (!visited[a] || !visited[b]) {
+            printf("ERROR: %d is not found.\n", visited[a]? b: a);
+        } else if (value == a || value == b) {
+            if (value == b) swap(a, b);
+            printf("%d is an ancestor of %d.\n", a, b);
+        } else {
+            printf("LCA of %d and %d is %d.\n", a, b, value);
+        }
+    }
+    return 0;
+}
