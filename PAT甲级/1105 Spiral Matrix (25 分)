@@ -1,0 +1,65 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 500;
+int graph[MAXN][MAXN];
+int cmp(int x, int y) {
+    return x > y;
+} 
+int main() {
+    int n, b, a = 1;
+    scanf("%d", &n);
+    while (a * a < n) {
+        a ++;
+    }
+    b = a;
+    while (a * b != n) { //构建矩形
+        if (a * b < n) {
+            a ++;
+        } else if (a * b > n) {
+            b --;
+        }
+    }
+    vector <int> vi(n);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &vi[i]);
+    }
+    //cout << a << " " << b << endl;
+    sort(vi.begin(), vi.end(), cmp);
+    fill(graph[0], graph[0] + MAXN * MAXN, -1); //题目的数字都是0
+    int u = 0, v = 0, cnt = 0;
+    while (graph[u][v] == -1 && cnt < n) {
+        while (v < b && graph[u][v] == -1) {
+            graph[u][v] = vi[cnt ++];
+            v ++;
+        }
+        v --;
+        u ++;
+        while (u < a && graph[u][v] == -1) {
+            graph[u][v] = vi[cnt ++];
+            u ++;
+        }
+        u --;
+        v --;
+        while (v >= 0 && graph[u][v] == -1) {
+            graph[u][v] = vi[cnt ++];
+            v --;
+        }
+        v ++;
+        u --;
+        while (u > 0 && graph[u][v] == -1) {
+            graph[u][v] = vi[cnt ++];
+            u --;
+        }
+        u ++;
+        v ++;
+    }
+    for (int i = 0; i < a; ++ i) {
+        for (int j = 0; j < b; ++ j) {
+            printf("%d", graph[i][j]);
+            printf(j == b - 1? "\n": " ");
+        }
+    }
+    return 0;
+}
