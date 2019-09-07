@@ -1,0 +1,31 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int main() {
+    int n;
+    scanf("%d", &n);
+    vector <int> vi(n), left(n), right(n);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &vi[i]);
+    }
+    vector <int> ans;
+    left[0] = vi[0]; //left[i],表示从左边数，到当前最大的值
+    right[n-1] = vi[n - 1]; //right[i],表示从右边数，到当前最小的值
+    for (int i = 1; i < n; ++ i) {
+        left[i] = max(vi[i], left[i-1]);
+        right[n - 1 - i] = min(right[n - i], vi[n - 1 - i]);
+    }
+    for(int i = 0; i < n; ++ i) {
+        if (vi[i] == left[i] && vi[i] == right[i]) {
+            ans.push_back(vi[i]);
+        }
+    }
+    printf("%d\n", ans.size());
+    for (int i = 0; i < ans.size(); ++ i) {
+        printf("%d", ans[i]);
+        printf(i == ans.size() - 1? "\n": " ");
+    }
+    if (ans.size() == 0) printf("\n"); //没有元素需要输出空行，第二个测试点
+    return 0;
+}
