@@ -44,7 +44,7 @@ void Dijkstra(int s) {
             if (!visited[v] && graph[u][v] != INF) {
                 if (dis[u] + graph[u][v] < dis[v]) {
                     dis[v] = dis[u] + graph[u][v];
-					c[v] = c[u] + cost[u][v];
+		    c[v] = c[u] + cost[u][v];
                     pre[v] = u;
                 } else if (dis[u] + graph[u][v] == dis[v] && c[u] + cost[u][v] < c[v]) {
                     c[v] = c[u] + cost[u][v];
