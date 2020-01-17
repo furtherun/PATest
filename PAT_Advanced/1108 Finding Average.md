@@ -47,6 +47,59 @@ The average of 0 numbers is Undefined
 ### My Code
 
 ```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <cmath> //use the fabs function in PAT
+#include <cstring>
 
+using namespace std;
+const int MAXN = 100;
+
+int main() {
+	char originStr[MAXN], motifiedStr[MAXN];
+	double tmp, total = 0;
+	int n, cnt = 0;
+	scanf("%d", &n);
+	while (n --) {
+		scanf("%s", originStr);
+		sscanf(originStr, "%lf", &tmp);
+		sprintf(motifiedStr, "%.2f", tmp);
+		bool flag = true; //compare the number in originStr and motifiedStr
+		int len = strlen(originStr);
+		//consider 2 situations, if originStr is longer than 
+		//motifiedStr(2 decimal places), so it's illegal, else orginStr
+		//is shorter than motifiedStr(consider the 0 at the end), so it
+		//is legal.
+		for (int i = 0; i < len; ++ i) {
+			if (originStr[i] != motifiedStr[i]) {
+				flag = false;
+				break;
+			}
+		}
+//		cout << "originStr = " << originStr << endl;
+//		cout << "motifiedStr = " << motifiedStr << endl;
+		if (flag == false || fabs(tmp) > 1000) {
+			//orginStr does't equal motifiedStr or float out of range 
+			printf("ERROR: %s is not a legal number\n", originStr);
+		} else {
+			total += tmp;
+			cnt ++;
+		}
+	}
+	if (cnt == 0) {
+		printf("The average of 0 numbers is Undefined\n");
+	} else if (cnt == 1) {
+		printf("The average of 1 number is %.2f\n", total / cnt);
+	} else {
+		printf("The average of %d numbers is %.2f\n", cnt, total / cnt);
+	}
+	return 0;
+}
 ```
 
+
+
+### 总结
+
+`sscanf`和`sprintf`这两个之前没有接触过的处理字符串的函数，可以在数字和字符串之间形成好的转化。这道题最后的输出很容易想到，但是判断两位小数的合法性比较复杂，是值得留意的一道数值转换类题目。
