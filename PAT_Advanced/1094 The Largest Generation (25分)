@@ -1,0 +1,51 @@
+/*
+1094 The Largest Generation (25分)
+*/
+#include <iostream>
+#include <vector>
+#include <cstdio>
+#include <algorithm>
+#include <unordered_map>
+
+using namespace std;
+const int MAXN = 105;
+struct Node {
+    vector<int> childs;
+    int level;
+    Node() :level(1) { };
+};
+vector<Node> tree(MAXN);
+//vector<int> levels(MAXN, 0);
+unordered_map<int, int> everyLevelNums;
+void dfs(int root, int level) {
+    if(root == -1) return;
+    tree[root].level = level;
+    everyLevelNums[level] ++;
+    for(auto item: tree[root].childs) {
+        dfs(item, level+1);
+    }
+}
+int main()
+{
+    int n, m, a, k, b;
+    scanf("%d %d", &n, &m);
+    for(int i = 0; i < m; ++ i) {
+        scanf("%d %d", &a, &k);
+        while(k --) {
+            scanf("%d", &b);
+            tree[a].childs.emplace_back(b);
+        }
+    }
+    dfs(1, 1);
+    int maxN = -1, maxG;
+    for(auto item: everyLevelNums) {
+        if(item.second > maxN) {
+            maxG = item.first;
+            maxN = item.second;
+        }
+//        cout << item.first << ": " << item.second << endl;
+    }
+
+    printf("%d %d\n", maxN, maxG);
+    return 0;
+}
