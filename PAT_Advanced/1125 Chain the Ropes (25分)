@@ -1,0 +1,33 @@
+/*
+1094 The Largest Generation (25分)
+这就是原来的25分题，难度真的是过山车，一会高一会低
+这题也可以发现每次都是选最小的两个相加除以2，保证了还是最小。
+其实不使用堆也可以，直接先排序，进行折叠计算。
+*/
+#include <iostream>
+#include <vector>
+#include <cstdio>
+#include <algorithm>
+#include <queue>
+#include <unordered_map>
+
+using namespace std;
+const int MAXN = 105;
+int main() {
+    priority_queue<double, vector<double>, greater<double>> heap; //默认大顶堆
+    int n, tmp;
+    scanf("%d", &n);
+    for(int i = 0; i <n; ++ i) {
+        scanf("%d", &tmp);
+        heap.push((double)tmp);
+    }
+    while(heap.size() > 1) {
+        double a = heap.top();
+        heap.pop();
+        double b = heap.top();
+        heap.pop();
+        heap.push((a+b)/2.f);
+    }
+    printf("%d\n", (int)heap.top());
+    return 0;
+}
