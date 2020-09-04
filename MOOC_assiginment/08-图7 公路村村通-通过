@@ -1,3 +1,71 @@
+/*
+2020-9-4
+1095 Cars on Campus (30分)
+最小生成树-Prim算法
+*/
+#include <iostream>
+#include <algorithm>
+#include <unordered_set>
+#include <map>
+#include <string>
+#include <vector>
+#include <cmath>
+using namespace std;
+const int MAXN = 1005;
+const int INF = 0x7fffffff;
+struct Edge{
+    int a, b, cost;
+    Edge(int x, int y, int c) : a(x), b(y), cost(c) { };
+};
+int cmp(const Edge& e1, const Edge& e2) {
+    if(e1.cost != e2.cost) {
+        return e1.cost < e2.cost;
+    } else if(e1.a != e2.a) {
+        return e1.a < e2.a;
+    } else {
+        return e1.b < e2.b;
+    }
+}
+
+int main() {
+    int n, m, a, b, cost;
+    vector<Edge> edgeList;
+    scanf("%d %d", &n, &m);
+    for(int i = 0; i < m; ++ i) {
+        scanf("%d %d %d", &a, &b, &cost);
+        edgeList.emplace_back(Edge(min(a, b), max(b, a), cost));
+    }
+    sort(edgeList.begin(), edgeList.end(), cmp);
+    unordered_set<int> hasExit;
+    hasExit.insert(1);
+    int ans = 0;
+    for(int i = 1; i < n; ++ i) {
+        bool isExitOneEdge = false;
+        for(Edge& e : edgeList) {
+            if(hasExit.find(e.a) != hasExit.end() && hasExit.find(e.b) == hasExit.end()) {
+                hasExit.insert(e.b);
+                ans += e.cost;
+                isExitOneEdge = true;
+                break;
+            } else if(hasExit.find(e.b) != hasExit.end() && hasExit.find(e.a) == hasExit.end()) {
+                hasExit.insert(e.a);
+                ans += e.cost;
+                isExitOneEdge = true;
+                break;
+            }
+        }
+        if(isExitOneEdge == false) {
+            ans = -1;
+            break;
+        }
+    }
+    printf("%d\n", ans);
+    return 0;
+}
+
+/*
+ode version
+*/
 #include <iostream>
 #include <array>
 #include <vector>
