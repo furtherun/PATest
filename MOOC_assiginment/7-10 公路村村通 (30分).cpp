@@ -1,6 +1,6 @@
 /*
 2020-9-4
-1095 Cars on Campus (30分)
+7-10 公路村村通 (30分)
 最小生成树-Prim算法
 */
 #include <iostream>
