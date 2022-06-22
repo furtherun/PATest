@@ -1,0 +1,39 @@
+//分值：
+//	20
+//考察点：
+//	字符串输出
+//易错点：
+//	匹配的范围比较严格，不在定义域中的相同字符需要忽略掉
+//	比如day 的范围要使用 s1[i] <= 'G' && s1[i] >= 'A' 而不是 isalpha(s1[i])
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+    string s1, s2, str1, str2;
+    cin >> s1 >> s2 >> str1 >> str2;
+    string day[7] = {"MON", "TUE", "WED", "THU", "FRI", "SAT","SUN"};
+    int num[3];
+    int cnt = 0;
+    for (int i = 0; i < min(s1.size(), s2.size()); ++ i) {
+        if (s1[i] == s2[i]) {
+            if (cnt == 0 && s1[i] <= 'G' && s1[i] >= 'A') {
+                num[cnt ++] = s1[i] - 'A';
+            }
+            else if (cnt == 1) {
+                if (s1[i] <= 'N' && s1[i] >= 'A') {
+                    num[cnt ++] = s1[i] - 'A' + 10;
+                } else if (isdigit(s1[i])) {
+                    num[cnt ++] = s1[i] - '1' + 1;
+                }
+            } 
+        }
+    }
+    for (int i = 0; i < min(str1.size(), str2.size()); ++ i) {
+        if (isalpha(str1[i]) && str1[i] == str2[i]) {
+            num[2] = i;
+            break;
+        }
+    }
+    printf("%s %02d:%02d\n", day[num[0]].c_str(), num[1], num[2]);
+    return 0;
+}

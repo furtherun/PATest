@@ -1,0 +1,41 @@
+//本题是要求判断一个序列是否为拓扑排序
+//使用排除法，并且要注意如何保存数据
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+const int MAXN = 1005;
+bool visited[MAXN];
+vector <int> father[MAXN];
+int main() {
+    int n, m, a, b, k;
+    scanf("%d %d", &n, &m);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d %d", &a, &b);
+        father[b].push_back(a);
+    }
+    vector <int> vi(n);
+    scanf("%d", &k);
+    int cnt = 0;
+    for (int j = 0; j < k; ++ j) {
+        bool flag = true;
+        fill(visited, visited + MAXN, false);
+        for (int i = 0; i < n; ++ i) {  
+            scanf("%d", &vi[i]);
+            visited[vi[i]] = true;
+            if (father[vi[i]].empty() || !flag) continue;
+            for (int u = 0; u < father[vi[i]].size(); ++ u) {
+                if (!visited[father[vi[i]][u]]) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        if (!flag) {
+            if (cnt != 0) printf(" "); //注意输出格式
+            printf("%d", j); 
+            cnt ++;
+        }
+    }
+    return 0;
+}

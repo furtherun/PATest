@@ -1,0 +1,24 @@
+//考察点：
+//	简单数学，虽然一点也不简单
+//易错点：
+//	不可以暴力计算，对于数据的拆分
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int main() {
+    int ans = 0, index = 1, now, left, right, n; //index 同时也是 pow(10, size(right));
+    scanf("%d", &n);
+    while (n >= index) {
+        now = n / index % 10;
+        right = n % index;
+        left = n / (index * 10);
+        switch(now) {	//这里一开始忘记写break，导致结果错误
+            case 0: ans += left * index; break;
+            case 1: ans += left * index + right + 1; break;
+            default: ans += (left + 1) * index; break;
+        }
+		index *= 10;
+    }
+    printf("%d\n", ans);
+    return 0;
+}

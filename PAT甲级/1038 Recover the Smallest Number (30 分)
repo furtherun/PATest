@@ -1,0 +1,39 @@
+//分值：
+//	30
+//考察点：
+//	string的函数和方法、贪心
+//易错点：
+//	前导零的处理不全面
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int cmp(string& a, string& b) {
+    return a + b < b + a;
+}
+int main() {
+    int n;
+    string tmp;
+    scanf("%d", &n);
+    vector<string> vi;
+    for (int i = 0; i < n; ++ i) {
+        cin >> tmp;
+        vi.push_back(tmp);
+    }
+    sort(vi.begin(), vi.end(), cmp);
+    string ans;
+    for (vector<string>::iterator it = vi.begin(); it != vi.end(); it ++) {
+        ans += *it;
+    }
+    int pos = ans.size();
+    for (int i = 0; i < ans.size(); ++ i) {
+        if (ans[i] != '0') {
+            pos = i;
+            break;
+        }
+    }
+    ans = ans.substr(pos);
+    ans.size() == 0? cout << "0" << endl : cout << ans << endl;
+    return 0;
+}

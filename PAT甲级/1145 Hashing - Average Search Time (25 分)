@@ -1,0 +1,75 @@
+//第一次没通过，一个测试点都没通过，但是案例通过了，让我很尴尬。
+//
+//去重看了一遍网课，也找了相关的代码，发现问题所在，就是处理查找时候的问题，究竟什么时候停止查找，按道理来说，分为一下几种情况：
+//
+//1. 找到了，这没什么好说的，用了几次，就返回多少
+//2. 找的时候，发现这个位置是空的（没有元素占位，也可能是删除的情况），此时如果有要查找的元素，那他必定应该放在这里，但是却没有，所以无需继续查找，直接退出就好，返回当前查找的次数
+//3. 最后是怎么也找不到，因为采用的是平方探测法，所以是有这种可能的；这里设置的一个边界就是要小于size， 这一点我也不太清楚为什么，暂时还没有找到参考资料
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+#include <numeric>
+using namespace std;
+int getNextPrime(int x) {
+    if (x <= 2) return 2;
+    if (x % 2 == 0) x ++; //偶数变奇数
+    bool flag = false;
+    while (!flag) {
+        flag = true;
+        int limit = (int)sqrt(1.f * x) + 1;
+        for (int i = 3; i <= limit; i += 2) {
+            if (x % i == 0) {
+                x += 2;
+                flag = false;
+                break;
+            }
+        }
+    }
+    return x;
+}
+int Hash(int x, int key) {
+    return x % key;
+}
+void Insert(int x, vector<int>& hashTable, vector<bool>& visited, int size) {
+    int i, pos;
+    for (i = 0; i < size; ++ i) {
+        pos = Hash(x + i * i, size);
+        if (!visited[pos]) {
+            hashTable[pos] = x;
+            visited[pos] = true;
+            break;
+        }
+    }
+    if (i == size) {
+        printf("%d cannot be inserted.\n", x);
+    }
+}
+int Find(int x, vector<int>& hashTable, vector<bool>& visited, int size) {
+    int i, pos;
+    for (i = 0; i < size; ++ i) {
+        pos = Hash(x + i * i, size);
+        if (!visited[pos] || (hashTable[pos] == x) ) {
+            break;
+        }
+    }
+    return i + 1;
+}
+int main() {
+    int size, n, m, tmp;
+    scanf("%d %d %d", &size, &n, &m);
+    size = getNextPrime(size);
+    vector <int> hashTable(size);
+    vector <bool> visited(size, false);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &tmp);
+        Insert(tmp, hashTable, visited, size);
+    }
+    vector <int> avgSearchTime(m);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d", &tmp);
+        avgSearchTime[i] = Find(tmp, hashTable, visited, size);
+    }
+    printf("%.1f\n", accumulate(avgSearchTime.begin(), avgSearchTime.end(), 0) * 1.0 / m);
+    return 0;
+}

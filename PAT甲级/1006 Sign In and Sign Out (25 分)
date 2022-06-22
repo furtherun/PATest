@@ -1,0 +1,38 @@
+分值：
+	25
+考察点：
+	按理说应该是排序，但是我采用了边读入边比较的方法，略微复杂化了一些
+	数据读入技巧，scanf更方便；
+	比较技巧，我这里是转换时间，如果是sort排序，写cmp的话，就依次比较结构体中的参数
+易错点：
+	注意区别vs2019中使用的scanf_s
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+#include <string>
+#include <vector>
+using namespace std;
+int main() {
+	int m;
+	cin >> m;
+	string name;
+	vector <string> vi;
+	int signIn, signOut, MIN = 0x3f3f3f3f, MAX = -1;
+	for (int i = 0; i < m; ++i) {
+		cin >> name;
+		vi.push_back(name);
+		int h, m, s;
+		scanf("%d:%d:%d", &h, &m, &s);	//vs2019中要求使用scanf_s
+		if (h * 3600 + m * 60 + s < MIN) {
+			signIn = i;
+			MIN = h * 3600 + m * 60 + s;
+		}
+		scanf("%d:%d:%d", &h, &m, &s);
+		if (h * 3600 + m * 60 + s > MAX) {
+			signOut = i;
+			MAX = h * 3600 + m * 60 + s;
+		}
+	}
+	cout << vi[signIn] << " " << vi[signOut] << endl;
+	return 0;
+}

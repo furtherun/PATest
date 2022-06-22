@@ -1,0 +1,42 @@
+//分值：
+//	25
+//考察点：
+//	hash（可能是本意），查找
+//技巧点：
+//	巧用map
+//易错点：
+//	输出时要按照升序，所以map中可以使用set代替vector
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <string>
+#include <set>
+using namespace std;
+int main() {
+    int n, k, courseId, courseCap;
+    string name;
+    map<string, set<int> > mp;
+    scanf("%d %d", &n, &k);
+    for (int i = 0; i < k; ++ i) {
+        scanf("%d %d", &courseId, &courseCap);
+        while (courseCap --) {
+            cin >> name;
+            mp[name].insert(courseId);
+        }
+    }
+    for (int i = 0; i < n; ++ i) {
+        cin >> name;
+        cout << name << " ";
+        if (mp.find(name) != mp.end()) {
+            printf("%d", mp[name].size());
+            for (set<int>::iterator it = mp[name].begin();\
+                 it != mp[name].end(); ++ it) {
+                printf(" %d", *it);
+            }
+            cout << endl;
+        } else {
+            cout << "0" << endl;
+        }
+    }
+    return 0;
+}

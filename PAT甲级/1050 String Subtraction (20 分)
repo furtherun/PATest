@@ -1,0 +1,31 @@
+//分值：
+//	20
+//考察点：
+//	hash和预处理
+//易错点：
+//	暴力计算明显超时
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 256;
+const int MAX_STR = 10005;
+int main() {
+    int Map[MAXN];
+    int s[MAX_STR];
+    char c;
+    int index = 0;
+    fill(Map, Map + MAXN, 0);
+    while ((c = getchar()) != '\n') {
+        Map[c] ++;
+        s[index ++] = c;
+    }
+    while ((c = getchar()) != '\n') { 	//第二个字符串出现的字符标记
+        Map[c] = 0;
+    }
+    for (int i = 0; i < index; ++ i) {
+        if (Map[s[i]]) { 	//将m次是否相等判断变为一次是否存在判断
+            printf("%c", s[i]); 	//最后一字符输出
+        }
+    }
+    return 0;
+}

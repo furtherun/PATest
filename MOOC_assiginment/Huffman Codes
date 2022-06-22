@@ -1,3 +1,4 @@
+//听说PAT甲级不考察Huffman编码~
 #include <iostream>
 #include <string>
 #include <array>

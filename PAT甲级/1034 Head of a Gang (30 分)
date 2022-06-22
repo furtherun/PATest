@@ -1,0 +1,89 @@
+//分值：
+//	30
+//考察点：
+//	并查集操作、连通集的判断、hash
+//易错点：
+//	需要进行预处理再进行数据存储
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+using namespace std;
+const int MAXN = 17580; //Hash结果的最大值
+int father[MAXN]; 	//负数表示根节点所在树的总结点数
+int weight[MAXN];
+int Hash(string s) {
+    int ret = 0;
+    for (int i = 0; i < s.size(); ++ i) {
+        ret = ret * 26 + (s[i] - 'A');
+    }
+    return ret;
+}
+int FindFather(int x) {
+    if (father[x] < 0) {
+        return x;
+    }
+    return father[x] = FindFather(father[x]); 	//压缩路径
+}
+void Union(int a, int b) {
+    int aRoot = FindFather(a), bRoot = FindFather(b);
+    if (aRoot == bRoot) return;
+    if (father[aRoot] < father[bRoot]) {
+        father[aRoot] += father[bRoot];
+        father[bRoot] = aRoot;
+    } else {
+        father[bRoot] += father[aRoot];
+        father[aRoot] = bRoot;
+    }
+}
+class Node {
+public:
+    int id, num;
+    Node (int id_ = 0, int num_ = 0) {
+        id = id_, num = num_;
+    }
+};
+int cmp(Node a, Node b) {
+    return a.id < b.id;
+}
+int main() {
+    int n, threshold;
+    scanf("%d %d", &n, &threshold);
+    fill(father, father + MAXN, -1);
+    fill(weight, weight + MAXN, 0);
+    string name1, name2;
+    int tmp, index1, index2;
+    for (int i = 0; i < n; ++ i) {
+        cin >> name1 >> name2 >> tmp;
+        index1 = Hash(name1), index2 = Hash(name2);
+        weight[index1] += tmp;
+        weight[index2] += tmp;
+        Union(index1, index2);
+    }
+    int index = 0;
+    vector <Node> vi;
+    while(index < MAXN) {
+        if (father[index] <= -3) {
+            int u = index, MAX = weight[index];
+            for (int i = 0; i < MAXN; ++ i) {
+                if (father[i] == index) {
+                    MAX += weight[i];
+                    if (weight[i] > weight[u]) u = i; 	//寻找首领
+                }
+            }
+            if (MAX / 2 > threshold) { //超过时长
+                Node node(u, -father[index]);
+                vi.push_back(node);
+            }
+        }
+        index ++;
+    }
+    sort(vi.begin(), vi.end(), cmp);
+    cout << vi.size() << endl;
+    for (int i = 0; i < vi.size(); ++ i) {
+        tmp = vi[i].id;
+        printf("%c%c%c %d\n", tmp / (26*26) + 'A',\
+               tmp / 26 % 26 + 'A',tmp % 26 + 'A', vi[i].num);
+    }
+    return 0;
+}

@@ -1,0 +1,40 @@
+//考察点：
+//	贪心
+//易错点：
+//	题目描述不足的地方，月饼量可能为小数（浮点数）
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 1005;
+class Mooncake {
+public:
+    double price, k, amount; //题目没有说明月饼量是否为整数,有一个案例就是考察这一点
+};
+int cmp(Mooncake a, Mooncake b) {
+    return a.k > b.k;
+}
+int main() {
+    Mooncake mooncake[MAXN];
+    int n, need;
+    scanf("%d %d", &n, &need);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%lf", &mooncake[i].amount);
+    }
+    for (int i = 0; i < n; ++ i) {
+        scanf("%lf", &mooncake[i].price);
+        mooncake[i].k = mooncake[i].price / mooncake[i].amount; //单价
+    }
+    sort(mooncake, mooncake + n, cmp);
+    double ans = 0, sum = 0;
+    for (int i = 0; i < n; ++ i) {
+        if (sum +mooncake[i].amount <= need) {
+            sum += mooncake[i].amount;
+            ans += mooncake[i].price;
+        } else {
+            ans += (need - sum) * mooncake[i].k; //所需×单价
+            break;
+        }
+    }
+    printf("%.2f\n", ans);
+    return 0;
+}

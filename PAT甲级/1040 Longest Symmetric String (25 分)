@@ -1,0 +1,39 @@
+//分值：
+//	25
+//考察点：
+//	动态规划，最长对称字串
+//易错点：
+//	比较生僻，暴力求解会超时
+#include <iostream>
+#include <string>
+using namespace std;
+const int MAXN = 1005;
+int main() {
+    int dp[MAXN][MAXN];
+    string str;
+    getline(cin, str);
+    dp[0][0] = 1;
+    int ans = 1; //最长对称字串长度
+    for (int i = 1; i < str.size(); ++ i) {
+        dp[i][i] = 1;
+        if(str[i - 1] == str[i]) {
+            dp[i - 1][i] = 1;
+            ans = 2;
+        } else {
+            dp[i - 1][i] = 0;
+        }
+    }
+    for (int len = 3; len <= str.size(); ++ len) {
+        for (int i = 0; i + len - 1 < str.size(); ++ i) { //j为子串右端下标
+            int j = i + len - 1;
+            if (str[i] == str[j] && dp[i + 1][j - 1]) {
+                dp[i][j] = 1;
+                ans = len;
+            } else {
+                dp[i][j] = 0;
+            }
+        }
+    }
+    cout << ans << endl;
+    return 0;
+}

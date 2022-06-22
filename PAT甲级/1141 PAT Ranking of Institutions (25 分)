@@ -1,0 +1,66 @@
+#include <iostream>
+#include <algorithm>
+#include <map>
+#include <string>
+#include <vector>
+using namespace std;
+class Institution {
+public:
+    string name;
+    double totalScore;
+    int finalScore, totalNum, r;
+    Institution(double tScore = 0, int tNum = 0) { //初始化函数
+        totalScore = tScore, totalNum = tNum, r = 1;
+    }
+};
+int cmp(Institution a, Institution b) {
+    if (a.finalScore != b.finalScore) {
+        return a.finalScore > b.finalScore;
+    } else if (a.totalNum != b.totalNum) {
+        return a.totalNum < b.totalNum;
+    } else return a.name < b.name;
+}
+int main() {
+    int n, cnt = 0;
+    double grade;
+    string id, school;
+    map <string, int> mp;
+    vector <Institution> institution;
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++ i) {
+        cin >> id >> grade >> school;
+        switch(id[0]) { //成绩调整
+            case 'B': grade /= 1.5; break;
+            case 'T': grade *= 1.5; break;
+        }
+        for (int i = 0; i < school.size(); ++ i) {
+            school[i] = tolower(school[i]); //输出调整
+        }
+        if (mp.find(school) == mp.end()) { //未出现则，设置代码
+            mp[school] = cnt ++;
+            Institution tmp(grade, 1);
+            tmp.name = school;
+            institution.push_back(tmp);
+        } else {
+            institution[mp[school]].totalScore += grade;
+            institution[mp[school]].totalNum ++;
+        }
+    }
+    for (int i = 0; i < cnt; ++ i) {
+        institution[i].finalScore = (int)institution[i].totalScore;
+    }
+    sort(institution.begin(), institution.end(), cmp);
+    for (int i = 1; i < cnt; ++ i) {
+        if (institution[i].finalScore == institution[i - 1].finalScore) {
+            institution[i].r = institution[i - 1].r;
+        } else {
+            institution[i].r = i + 1;
+        }
+    }
+    printf("%d\n", cnt);
+    for (int i = 0; i < cnt; ++ i) {
+        Institution& t = institution[i];
+        printf("%d %s %d %d\n", t.r, t.name.c_str(), t.finalScore, t.totalNum);
+    }
+    return 0;
+}

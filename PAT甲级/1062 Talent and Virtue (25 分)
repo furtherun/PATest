@@ -1,0 +1,49 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+using namespace std;
+class Person {
+public:
+    int state, virtue, talent, total;
+    string id;
+};
+int cmp(Person a, Person b) {
+    if (a.state != b.state) return a.state < b.state;
+    else if (a.total != b.total) return a.total > b.total;
+    else if (a.virtue != b.virtue) return a.virtue > b.virtue; //这句话题目中并没有出现
+    else return a.id < b.id; //但是根据结果推断出有上一个比较
+}
+int main() {
+    int n, low, high;
+    vector <Person> person;
+    Person tmpPerson;
+    scanf("%d %d %d", &n, &low, &high);
+    for (int i = 0; i < n; ++ i) {
+        Person& p = tmpPerson;
+        cin >> p.id;
+        scanf("%d %d", &p.virtue, &p.talent);
+        if (min(p.virtue, p.talent) >= low) {
+            if (min(p.virtue, p.talent) >= high) {
+                p.state = 1; //圣人
+            } else if (p.virtue >= high) {
+                p.state = 2; //君子
+            } else if (p.virtue >= p.talent) {
+                p.state = 3; //愚人
+            } else {
+                p.state = 4; //小人
+            }
+            p.total = p.virtue + p.talent;
+            person.push_back(p);
+        } else { // 不排名
+            continue;
+        }
+    }
+    sort(person.begin(), person.end(), cmp);
+	printf("%d\n", person.size());
+    for (int i = 0; i < person.size(); ++ i) {
+        printf("%s %d %d\n", person[i].id.c_str(), person[i].virtue,\
+               person[i].talent);
+    }
+    return 0;
+}

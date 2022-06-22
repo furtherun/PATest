@@ -1,0 +1,68 @@
+//LIS法
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 10005;
+const int MAXC = 205;
+int main() {
+    int arr[MAXN], dp[MAXN], hashTable[MAXC];
+    int n, m, l;
+    scanf("%d %d", &n, &m);	//事实上总颜色数量没用，就把他当作一个读颜色的临时变量了
+    fill(hashTable, hashTable + MAXC, -1);
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d", &n);
+        hashTable[n] = i;
+    }
+    scanf("%d", &l);
+    int length = 0, ans = -1;
+    for (int i = 0; i < l; ++ i) {
+        scanf("%d", &n);
+        if (hashTable[n] >= 0) {
+            arr[length ++] = hashTable[n]; 	//存储映射后的变量
+        }
+    }
+    for (int i = 0; i < length; ++ i) {
+        dp[i] = 1;
+        for (int j = 0; j < i; ++ j) {
+            if (arr[j] <= arr[i] && dp[j] + 1 > dp[i]) {
+                dp[i] = dp[j] + 1;
+            }
+        }
+        ans = max(ans, dp[i]);
+    }
+    printf("%d\n", ans);
+    return 0;
+}
+
+//LCS法
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 10005;
+const int MAXC = 205;	//需要压缩一下范围，不能直接用MAXN开
+int main() {
+    int n, m, l;
+    scanf("%d %d", &n, &m);
+    int dp[MAXC][MAXN], A[MAXC], B[MAXN];
+    for (int i = 1; i <= m; ++ i) {
+        scanf("%d", &A[i]);
+    }
+    scanf("%d", &l);
+    for (int i = 1; i <= l; ++ i) {
+        scanf("%d", &B[i]);
+    }
+    for (int i = 0; i <= m; ++ i) {
+        dp[i][0] = 0;
+    }
+    for (int j = 0; j <= l; ++ j) {
+        dp[0][j] = 0;
+    }
+    for (int i = 1; i <= m; ++ i) {
+        for (int j = 1; j <= l; ++ j) {
+            dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            if (A[i] == B[j]) dp[i][j] ++;
+        }
+    }
+    printf("%d\n", dp[m][l]);
+    return 0;
+}

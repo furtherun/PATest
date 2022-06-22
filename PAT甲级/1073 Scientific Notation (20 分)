@@ -1,0 +1,44 @@
+//考察点：
+//	字符串的处理
+//易错点：
+//	指数为0
+//	指数为正数是有两种情况，注意区别有无小数点
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+int main() {
+    string n;
+    cin >> n;
+    int pos = n.find('E');
+    string left = n.substr(0, pos);
+    string right = n.substr(pos + 1, n.size() - pos - 1);
+    if (left[0] == '-') printf("%c", left[0]); //负号需要输出，正号不用输出
+    int index = stoi(right);
+    string fraction = left.substr(3, left.size() - 3); //左端小数点后的部分
+    if (index == 0) {
+        cout << left << endl;
+    } else if (index < 0) {
+        for (int i = 0; i < -index; ++ i) {
+            printf("0");
+            if (i == 0) printf(".");
+        }
+        printf("%c%s\n", left[1], fraction.c_str());
+    } else {
+        if (index >= fraction.size()) { //无小数点
+            int zeroNum = index - fraction.size();
+            printf("%c%s", left[1], fraction.c_str());
+            for (int i = 0; i < zeroNum; ++ i) {
+                printf("0");
+            }
+            printf("\n");
+        } else {
+            printf("%c", left[1]);
+            for (int i = 0; i < fraction.size(); ++ i) {
+				if (i == index) printf(".");
+                printf("%c", fraction[i]);
+            }
+        }
+    }
+    return 0;
+}

@@ -1,0 +1,41 @@
+////考察点：
+//	链表的排序
+////易错点：
+//	可能有一些点不在链表上
+//	可能所有的点都不在，最后一组测试结果是 0 -1也即空链表
+////说明：
+//	vs2010中使用next作为数组名称报错显示：next不明确，原因是与内部的保留字冲突
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 100005;
+vector <int> vi;
+int n, head, address;
+int data[MAXN], nextAdd[MAXN];
+int cmp(int a, int b) {
+    return data[a] < data[b];
+}
+int main() {
+    scanf("%d %d", &n, &head);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &address);
+        scanf("%d %d", &data[address], &nextAdd[address]);
+    }
+    int t = head;
+    while (t != -1) {
+        vi.push_back(t);
+        t = nextAdd[t];
+    }
+    sort(vi.begin(), vi.end(), cmp);
+    if (!vi.empty()) {
+        printf("%d %05d\n", vi.size(), vi.front());
+        for (int i = 0; i < vi.size() - 1; ++ i) {
+            printf("%05d %d %05d\n", vi[i], data[vi[i]], vi[i + 1]);
+        }
+        printf("%05d %d -1\n", vi[vi.size() - 1], data[vi[vi.size() - 1]]);
+    } else {
+     	printf("%d -1\n", vi.size());
+    }
+    return 0;
+}

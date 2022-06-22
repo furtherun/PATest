@@ -1,0 +1,53 @@
+//考察点：
+//	剪枝，求路径
+//总结：
+//	类比Dijkstra + DFS的写法，
+//	一开始进行了非下降排序，所以可以在找到结果后直接进行输出
+//易错点：
+//	路径的起点或者终点容易漏掉处理
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+const int MAXN = 105;
+const int INF = 0x3f3f3f3f;
+int n, m, ret, tmp, k, id;
+int weight[MAXN];
+vector <int> vi;
+vector<int> node[MAXN];
+int cmp(int a, int b) {
+    return weight[a] > weight[b];
+}
+void DFS(int u, int sum) {
+    if (sum > ret) return; //剪枝
+    if (node[u].size() == 0 && sum + weight[u] == ret) {
+        vi.push_back(u);
+        for (int i = 0; i < vi.size(); ++ i) {
+            printf("%d", weight[vi[i]]);
+            printf(i == vi.size() - 1 ? "\n": " "); 
+        }
+        vi.pop_back();
+        return;
+    }
+	vi.push_back(u);
+    for (int i = 0; i < node[u].size(); ++ i) {
+        DFS(node[u][i], sum + weight[u]);
+    }
+	vi.pop_back();
+}
+int main() {
+    scanf("%d %d %d", &n, &m, &ret);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &weight[i]);
+    }
+    for (int i = 0; i < m; ++ i) {
+        scanf("%d %d", &id, &k);
+        while (k --) {
+            scanf("%d", &tmp);
+            node[id].push_back(tmp);
+        }
+        sort(node[id].begin(), node[id].end(), cmp);
+    }
+    DFS(0, 0);
+    return 0;
+}

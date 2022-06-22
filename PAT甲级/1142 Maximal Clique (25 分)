@@ -1,0 +1,54 @@
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
+#include <set>
+#include <vector>
+#include <iterator>
+using namespace std; //一开始忘了写，总是没找到错误
+int main() {
+    int n, m, a, b;
+    unordered_map<int, set<int> > mp;
+    scanf("%d %d", &n, &m);
+    for (int i = 1; i <= n; ++ i) {
+        mp[i].insert(i);
+    }
+    while (m --) {
+        scanf("%d %d",&a, &b);
+        mp[a].insert(b);
+        mp[b].insert(a);
+    }
+    scanf("%d", &m);
+    int k;
+    while (m --) {
+        scanf("%d", &k);
+        vector <int> vi(k);
+        for (int i = 0; i < k; ++ i) {
+            scanf("%d", &vi[i]);
+        }
+        bool flag = true; //先判断是否连通
+        for (int i = 0; i < k; ++ i) {
+            for (int j = i + 1; j < k; ++ j) {
+                if (mp[vi[i]].find(vi[j]) == mp[vi[i]].end()) {
+                    puts("Not a Clique"); //根本不连通
+                    flag = false;
+                    goto out; //深度退出
+                }
+            }
+        }
+        if (flag) { //连通后，判断公共结点数
+            set <int> st, ans = mp[vi[0]];
+            for (int i = 1; i < k; ++ i) {
+                set_intersection(mp[vi[i - 1]].begin(), mp[vi[i - 1]].end(),\
+                                mp[vi[i]].begin(), mp[vi[i]].end(),\
+                                 inserter(st, st.begin()));
+                ans = st;
+                st.clear();
+            }
+            if(ans.size() < k) puts("Not a Clique");
+            if(ans.size() == k) puts("Yes");
+            else puts("Not Maximal");
+        }
+        out:;
+    }
+    return 0;
+}

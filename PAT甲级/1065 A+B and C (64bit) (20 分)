@@ -1,0 +1,36 @@
+//分值：
+//	20
+//考察点：
+//	溢出处理、分类讨论
+//易错点：
+//	溢出错误
+#include <iostream>
+#include <algorithm>
+#define LL long long	//注意LL的上下限，下限的绝对值比上限要大9223372036854775807 -9223372036854775808
+using namespace std;
+inline LL Func(LL a, LL b, LL c) {
+    if (c >= 0) {	//关键在于c == 0的处理
+        if (a <= 0 && b <= 0) {
+            return -1;
+        } else {
+            return min(a, b) > c - max(a, b);
+        }
+    } else {
+        if (a > 0 && b > 0) {
+            return 1;
+        } else {
+            return max(a, b) > c - min(a, b);
+        }
+    }
+}
+int main() {
+    int n;
+    LL a, b, c;
+    scanf("%d", &n);
+    for (int i = 1; i <= n; ++ i) {
+        printf("Case #%d: ", i);
+        scanf("%lld %lld %lld", &a, &b, &c);
+        puts(Func(a, b, c) > 0? "true" : "false");
+    }
+    return 0;
+}

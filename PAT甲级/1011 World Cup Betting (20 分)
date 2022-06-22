@@ -1,0 +1,28 @@
+//分值：
+//	20
+//考察点：
+//	英语，这题题目读起来确实有难度，但是案例解释的很明白，结果比较容易得出
+//易错点：
+//	中规中矩，如果不计时间和空间损耗，其实可以写起来更容易，这里我是边计算边输出
+//	就是要注意这样无法检查输处格式，不过提交是输出在文件中的，不用担心自己测试时的格式不对
+#include <iostream>
+#include <string>
+using namespace std;
+int main() {
+	double tmp = 0, MIN = 1.0;
+	int u;
+	string selection[3] = { "W", "T", "L" };
+	for (int i = 0; i < 3; ++i) {
+		double ret = -1.0;
+		for (int j = 0; j < 3; ++j) {
+			cin >> tmp;
+			if (tmp > ret) {
+				u = j, ret = tmp;
+			}
+		}
+		cout << selection[u] << " ";
+		MIN *= ret;
+	}
+	printf("%.2f\n", (MIN * 0.65 - 1) * 2);
+	return 0;
+}

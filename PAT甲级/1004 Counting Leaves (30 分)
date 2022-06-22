@@ -1,0 +1,59 @@
+//分值：
+	30
+//考察点：
+//	树的DFS遍历，树的抽象形式
+//易错点：
+//	N的最大值100，并不是最大节点索引，考虑到最坏的情况是链表，索引是指数增长的，所以不能用hashTable
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 100;
+int n, m;
+int nodeId[MAXN];	//非叶子节点的id
+vector <int> nodeChild[MAXN];	//对应非叶子节点的孩子id
+int depthNum[MAXN];	//深度为i的叶子节点的数目
+int Find(int value) {
+	int pos = -1;
+	for (int i = 0; i < m; ++i) {
+		if (nodeId[i] == value) {
+			pos = i;
+			break;
+		}
+	}
+	return pos;
+}
+void DFS(int s, int depth) {	//s是节点的id
+	int pos = Find(s);	//Find函数判断id在非叶子节点序列中的位置
+	if (pos == -1) {
+		depthNum[depth] ++;
+		return;
+	}
+	for (int i = 0; i < nodeChild[pos].size(); ++i) {
+		DFS(nodeChild[pos][i], depth + 1);
+	}
+}
+int main() {
+	int childNum, childPos;
+	cin >> n >> m;
+	fill(depthNum, depthNum + MAXN, 0);
+	for (int i = 0; i < m; ++i) {
+		cin >> nodeId[i] >> childNum;
+		while (childNum--) {
+			cin >> childPos;
+			nodeChild[i].push_back(childPos);
+		}
+	}
+	DFS(1, 0);	//遍历的是id
+	int u = 0;
+	for (int i = 0; i < MAXN; ++i) { //得到树的深度
+		if (depthNum[i] != 0) {
+			u = i;
+		}
+	}
+	for (int i = 0; i <= u; ++i) {
+		cout << depthNum[i];
+		i < u ? cout << " " : cout << endl;
+	}
+	return 0;
+}

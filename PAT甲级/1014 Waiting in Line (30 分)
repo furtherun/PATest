@@ -1,0 +1,64 @@
+//分值：
+//	30
+//考察点：
+//	快乐模拟，排队，查询
+//易错点：
+//	需要理解并记忆模型
+#include <iostream>
+#include <algorithm>
+#include <queue>
+using namespace std;
+const int MAX_N = 25;
+const int MAX_K = 1005;
+const int MAX_M = 15;
+class Window {
+public:
+	int popTime; 	//第一个人离开的时间
+	int endTime;		//最后一个人离开的时间
+	queue <int> q;	//排队队列，存储客户的服务时间
+	Window() {
+		popTime = endTime = 8 * 60;
+	}
+};
+int main() {
+	int n = 0, m = 0, k = 0, q = 0;
+	cin >> n >> m >> k >> q;
+	Window win[MAX_N];
+	int needTime[MAX_K], ret[MAX_K];
+	for (int i = 0; i < k; ++i) {
+		cin >> needTime[i];
+	}
+	for (int i = 0; i < min(n * m, k); ++i) { 	//服务区大于等待区，可以直接输出
+		win[i % n].q.push(needTime[i]);
+		win[i % n].endTime += needTime[i];
+		ret[i] = win[i % n].endTime;
+	}
+	if (k > m * n) { 	//如果还有客户在等待区
+		for (int i = 0; i < n; ++i) { 	//初始化每个窗口的popTime
+			win[i].popTime += needTime[i];
+		}
+		for (int j = m * n; j < k; ++j) { 	//对于剩余的每个客户，寻找服务窗口，即一出一进
+			int u = 0;
+			for (int i = 1; i < n; ++i) {
+				if (win[i].popTime < win[u].popTime) {
+					u = i;
+				}
+			}
+			Window& w = win[u]; 	//关键代码块
+			w.q.pop();	
+			w.popTime += w.q.front();	//pop结束的时间Time变为队列下一个客户
+			w.q.push(needTime[j]); 	//新客户入队
+			w.endTime += needTime[j];	//更新队尾结束时间
+			ret[j] = w.endTime;	//也即该客户结束服务的时间
+		}
+	}
+	int query = 1;
+	for (int i = 0; i < q; ++i) {
+		cin >> query;
+		if (ret[query - 1] - needTime[query - 1] < 17 * 60) {	//结束-所需 = 开始
+			printf("%02d:%02d\n", ret[query - 1] / 60, ret[query - 1] % 60);
+		}
+		else cout << "Sorry" << endl;
+	}
+	return 0;
+}

@@ -1,0 +1,68 @@
+#include <iostream>
+#include <array>
+#include <cstdio>
+#include <algorithm>
+#define INF 0x3fffffff
+
+using namespace std;
+const int MAXN = 102;
+array < array <int, MAXN>, MAXN> graph;
+
+int n, m;
+
+void BuildGraph( )
+{
+    cin >> n >> m;
+    int a, b, tmp;
+    for (int i = 1; i <= n; ++ i) {
+        fill(graph[i].begin(), graph[i].end(), INF);
+    }
+    for (int i = 0; i < m; i ++) {
+        cin >> a >> b >> tmp;
+        graph[a][b] = graph[b][a] = tmp;
+    }
+}
+void Floyd( )
+{
+    for (int k = 1; k <= n; ++ k) {
+        for (int i = 1; i <= n; ++ i) {
+            for (int j = 1; j <= n; ++ j) {
+                if (graph[i][k] + graph[k][j] < graph[i][j]) {
+                    graph[i][j] = graph[i][k] + graph[k][j];
+                }
+            }
+        }
+    }
+}
+int FindMaxDist(int index)
+{
+    int ans {-1};
+    for (int i = 1; i <= n; ++ i) {
+        if (i != index)
+        ans = max(graph[index][i], ans);
+    }
+    return ans;
+}
+void Print( )
+{
+    int t, ans, minDist {INF};
+    for (int i = 1; i <= n; ++ i) {
+        ans = FindMaxDist(i);
+        if (ans == INF) {
+            printf("0\n");
+            return;
+        }
+        if (minDist > ans) {
+            minDist = ans;
+            t = i;
+        }
+    }
+    printf("%d %d", t, minDist);
+}
+int main()
+{
+    BuildGraph();
+    Floyd();
+    Print();
+    return 0;
+}

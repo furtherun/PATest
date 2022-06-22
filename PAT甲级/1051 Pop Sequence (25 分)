@@ -1,0 +1,30 @@
+//考察点：
+//	出栈序列
+//易错点：
+//	要知道这个判断出栈序列的规律，容易忘记每次要清空栈
+#include <iostream>
+#include <stack>
+#include <algorithm>
+using namespace std;
+int main() {
+    int maxSize, n, k, tmp;
+    scanf("%d %d %d", &maxSize, &n, &k);
+    while (k --) {
+        int index = 1;
+        bool flag = true;
+		stack <int> st;		//注意每次要清理栈
+        for (int i = 1; i <= n; ++ i) {
+            scanf("%d", &tmp);
+            while (index <= tmp) {
+                st.push(index ++);
+            }
+            if (st.top() != tmp || st.size() > maxSize) {
+                flag = false;
+            } else {
+                st.pop();
+            }
+        }
+        puts(flag? "YES": "NO");
+    }
+    return 0;
+}

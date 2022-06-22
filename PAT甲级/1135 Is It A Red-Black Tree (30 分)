@@ -1,0 +1,72 @@
+//说明：
+//	最近的考试题目习惯考察对给的定义的理解，判断给定序列是否符合条件，考察理解能力
+//	本题判断是否为红黑树，需要读懂定义，熟练使用递归
+#include <iostream>
+#include <algorithm>
+using namespace std;
+class Node {
+public:
+    int value;
+    Node* rchild, *lchild;
+};
+Node* NewNode(int v) {
+    Node* tmp = new Node;
+    tmp->value = v;
+    tmp->lchild = tmp->rchild = nullptr;
+    return tmp;
+}
+void Insert(Node*& root, int v) { //红黑树是一种平衡二叉树
+    if (root == nullptr) {
+        root = NewNode(v);
+        return;
+    }
+    if (abs(v) < abs(root->value)) {
+        Insert(root->lchild, v);
+    } else {
+        Insert(root->rchild, v);
+    }
+}
+int getBlackNum(Node* root) { //从叶子节点到该节点的路径黑色节点数，空节点为黑节点
+    if (root == nullptr) {
+        return 1;
+    }
+    int numL = getBlackNum(root->lchild);
+    int numR = getBlackNum(root->rchild);
+    return root->value > 0? max(numL, numR) + 1: max(numL, numR); //算上自生节点
+}
+bool isPathBlackEqal(Node* root) { //测试第五条，任一点到叶子结点的路径黑色结点数是否相等
+    if (root == nullptr) return true; //边界返回
+    int numL = getBlackNum(root->lchild); //左子树路径黑色结点数
+    int numR = getBlackNum(root->rchild); //右子树路径黑色结点数
+    if (numL != numR) return false; //不满足定义第5条
+    return isPathBlackEqal(root->lchild) && isPathBlackEqal(root->rchild); //递归判断
+}
+bool isRedChildAllBlack(Node* root) { //测试第四条
+    if (root == nullptr) return true;
+    if (root->value < 0) { //对于红色结点，孩子节点应是黑色的
+        if (root->lchild && root->lchild->value < 0) {
+            return false;
+        }
+        if (root->rchild && root->rchild->value < 0) {
+            return false;
+        }
+    }
+    return isRedChildAllBlack(root->lchild) && isRedChildAllBlack(root->rchild);
+}
+int main() {
+    int k, n, tmp;
+    scanf("%d", &k);
+    while (k --) {
+        scanf("%d", &n);
+        Node* root = new Node;
+        root = nullptr;
+        bool flag = true;
+        while (n --) {
+            scanf("%d", &tmp);
+            Insert(root, tmp);
+        }
+        if(root->value < 0) flag = false; //第二条判断
+        else flag = isRedChildAllBlack(root) && isPathBlackEqal(root);
+        puts(flag? "Yes" : "No");
+    }
+}

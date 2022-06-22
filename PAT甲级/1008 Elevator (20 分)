@@ -1,0 +1,27 @@
+//分值：
+//	20
+//考察点：
+//	英语
+//易错点：
+//	水题，感觉改成不定次更有挑战性一些
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int main() {
+	int now = 0;
+	int next = 0;
+	int  t = 0, n = 0;
+	cin >> n;
+	for (int i = 0; i < n; ++i) {
+		cin >> next;
+		if (next - now > 0) {
+			t += 6 * (next - now);
+		}
+		else {
+			t += 4 * (now - next);
+		}
+		now = next;
+	}
+	cout << t + n * 5 << endl;
+	return 0;
+}

@@ -1,0 +1,91 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+using namespace std;
+const int MAXN = 1015;
+const int INF = 0x7fffffff;
+int graph[MAXN][MAXN];
+int dis[MAXN];
+bool visited[MAXN];
+int n, m, k, dMax; //一开始看错了m的最大值，最后一个测试点m=10
+void Dijkstra(int s) {
+    fill(dis, dis + MAXN, INF);
+    fill(visited, visited + MAXN, false);
+    dis[s] = 0;
+    for (int i = 1; i <= n + m; ++ i) {
+        int u = -1, MIN = INF;
+        for (int j = 1; j <= n + m; ++ j) {
+            if (!visited[j] && dis[j] < MIN) { //不要忘记选择没有访问的节点！！！
+                MIN = dis[j];
+                u = j;
+            }
+        }
+        if (u == -1) return;
+        visited[u] = true;
+        for (int v = 1; v <= m + n; ++ v) {
+            if (!visited[v] && graph[u][v] != INF) {
+                if (dis[u] + graph[u][v] < dis[v]) {
+                    dis[v] = dis[u] + graph[u][v];
+                }
+            }
+        }
+    }
+}
+int getId(string& s) { //题目的加油站可能有10个，一开始看错了范围
+    int id = 0;
+    int i = 0; 
+    while (i < s.size()) { //将所有的数字字符转化为数字
+        if (s[i] != 'G') {
+            id = id * 10 + s[i] - '0';
+        }
+        i ++;
+    }
+    if (s[0] == 'G') return n + id; //首位为G则加上n
+    else return id;
+    return id;
+}
+int main() {
+    fill(graph[0], graph[0] + MAXN * MAXN, INF);
+    string p1, p2;
+    int t1, t2, tmp;
+    scanf("%d %d %d %d", &n, &m, &k, &dMax);
+    for (int i = 0; i < k; ++ i) {
+        cin >> p1 >> p2;
+        t1 = getId(p1), t2 = getId(p2);
+        scanf("%d", &tmp);
+        graph[t1][t2] = graph[t2][t1] = tmp;
+    }
+    double ansShortestDis = -1, ansAvg = INF;
+    int ansId = -1;
+    for (int j = n + 1; j <= n + m; ++ j) { //对于每一个加油站
+        Dijkstra(j);
+        double shortestDis = INF, avg = 0;
+        for (int i = 1; i <= n; ++ i) {
+            if (dis[i] > dMax) { //超出范围标记失败
+                shortestDis = -1;
+                break;
+            }
+            if (dis[i] < shortestDis) {
+                shortestDis = dis[i]; //寻找最小的路径
+            }
+            avg += 1.0 * dis[i]; //求所有点的平均值
+        }
+        if (shortestDis == -1) continue;
+        avg /= n;
+        if (shortestDis > ansShortestDis) { //最小路径中的最大者
+            ansShortestDis = shortestDis;
+            ansAvg = avg;
+            ansId = j;
+        } else if (shortestDis == ansShortestDis && avg < ansAvg) {
+            ansAvg = avg;
+            ansId = j;
+        }
+    }
+    if (ansId == -1) {
+        printf("No Solution\n");
+    } else {
+        printf("G%d\n%.1f %.1f\n",ansId - n, ansShortestDis, ansAvg);
+    }
+    return 0;
+}

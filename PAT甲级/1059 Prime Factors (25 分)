@@ -1,0 +1,53 @@
+//考察点：
+//	素数，格式输出
+//易错点：
+//	质数输出，乘号输出格式
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int getNextPrim(int n) {
+	if (n <= 1) return 2; 
+    n % 2 ? n += 2: n ++;
+    while (true) {
+        bool flag = true;
+        for (int i = 3; i * i <= n; ++ i) {
+            if(n % i == 0) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) break;
+		else n += 2;
+    }
+    return n;
+}
+int main() {
+	int n, t;
+    scanf("%d", &n);
+    printf("%d=", n);
+    t = n;
+    int tmp = 2;
+    bool isHead = true, flag;
+    while (t > 1) {
+        int cnt = 0;
+        flag = false;
+         while (t % tmp == 0) {
+            cnt ++;
+            t /= tmp;
+            flag = true;
+        }
+        if (!isHead && flag) printf("*");
+        if (cnt == 1) {
+            printf("%d", tmp);
+            isHead = false;
+        } else if (cnt > 1) {
+            printf("%d^%d", tmp, cnt);
+            isHead = false;
+        }
+        tmp = getNextPrim(tmp);
+    }
+    if (isHead) {
+        printf("%d\n", n);
+    }
+    return 0;
+}

@@ -1,0 +1,43 @@
+//考察点：
+//	分数加法,GCD算法
+//易错点：
+//	我也不清楚，总之我写的最后一个过不去
+//	参考了别人的代码，输出时再处理系数问题
+#include <iostream>
+#include <cstdio>
+using namespace std;
+int GCD(int a, int b)
+{
+    return !b ? a : GCD(b, a % b);
+}
+int main()
+{
+    int n, a1, a2, b1, b2, flag;
+    scanf("%d %d/%d", &n, &a1, &b1);
+    for (int i = 1; i < n; ++ i) {
+        scanf("%d/%d", &a2, &b2);
+        a1 = a1 * b2 + a2 * b1;
+        b1 = b1 * b2;
+        if (b1 < 0) {
+            a1 *= -1, b1 *= -1;
+        }
+        if (a1 < 0) {
+            flag = -1;
+            a1 *= -1;
+        } else {
+            flag = 1;
+        }
+        int m = GCD(a1, b1);
+        a1 /= m, b1 /= m;
+    }
+    if (a1 % b1 == 0) {
+        printf(flag > 0 || a1 == 0 ? "%d": "-%d", a1/b1);
+    } else {
+        if (a1 > b1) {
+            printf(flag > 0? "%d %d/%d": "-%d %d/%d", a1/b1, a1 - a1/b1 * b1, b1);
+        } else {
+            printf(flag > 0? "%d/%d": "-%d/%d", a1, b1);
+        }
+    }
+    return 0;
+}

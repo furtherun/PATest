@@ -1,0 +1,50 @@
+//考察点：
+//	队列的使用
+//易错点：
+//	题目的理解，第三行数是参赛老鼠的序号，即第一个数字6是表示mice[6]第一个入队
+//	模型的构建，这种晋级排名的赛制要能联想到队列，还有循环处理时，每次需要调整组数和比赛老鼠总数
+#include <iostream>
+#include <queue>
+using namespace std;
+const int MAXN = 1005;
+class Mice {
+public:
+    int weight, id;
+};
+int main() {
+  	Mice mice[MAXN];
+    int n, groupSize, id;
+    scanf("%d %d", &n, &groupSize);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &mice[i].weight);
+    }
+    queue <int> q;	//存储mice初始的序列号
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &id);
+        q.push(id);
+    }
+    int tmpN = n;	//该轮比赛的老鼠数目
+    while(q.size() != 1) {
+        int groupNum = (tmpN % groupSize? tmpN / groupSize + 1: tmpN / groupSize);
+        for (int i = 0; i < groupNum; ++ i) {
+            int maxWeightId = q.front();
+            for (int j = 0; j < groupSize; ++ j) {
+                if (i * groupSize + j >= tmpN) break; //现在这个位于该轮比赛的位置
+                int tmpWeightId = q.front();
+                if (mice[maxWeightId].weight < mice[tmpWeightId].weight) {
+                    maxWeightId = tmpWeightId;
+                }
+                mice[tmpWeightId].id = groupNum + 1; 	//该轮被淘汰的排名为晋级数+1
+                q.pop(); //淘汰出队
+            }
+            q.push(maxWeightId);
+        }
+        tmpN = groupNum; //下一轮比赛老鼠数为晋级的所有老鼠数
+    }
+    mice[q.front()].id = 1;
+    for (int i = 0; i < n; ++ i) {
+        printf("%d", mice[i].id);
+        printf(i < n - 1 ? " ": "\n");
+    }
+    return 0;
+}

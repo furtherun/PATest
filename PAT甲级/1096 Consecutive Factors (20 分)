@@ -1,0 +1,31 @@
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+int main() {
+    int n, start, len = 0;
+    scanf("%d", &n);
+    int limit = sqrt(n) + 1; //这里比使用 i * i <= n会快很多，格式还是vs的问题
+    for (int i = 2; i <= limit; ++ i) {
+        int tmp = 1, j = i;
+       while (true) {
+           tmp *= j;
+           if (n % tmp != 0) break;
+           j ++;
+           if (j - i > len) {
+               start = i;
+               len = j - i;
+           }
+       }
+    }
+    if (!len) {
+        printf("1\n%d\n", n);
+    } else {
+        printf("%d\n", len);
+        for (int i = start; i < start + len; ++ i) {
+            printf("%d", i);
+            printf(start + len - 1 == i? "\n": "*");
+        }
+    }
+    return 0;
+}

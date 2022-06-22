@@ -1,0 +1,101 @@
+//分值：
+//	30
+//考察点：
+//	Dijkstra最短路径、格式化输出
+//易错点：
+//  本题题意有些不太清晰，是要在去终点的路上按顺序调整
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 505;
+const int INF = 0x3f3f3f3f;
+int graph[MAXN][MAXN];
+int weight[MAXN];
+int dis[MAXN];
+int cMax, n, ed, m;
+vector <int> pre[MAXN];
+vector <int> path, tmpPath;
+bool visited[MAXN];
+void Dijkstra(int s) {
+    fill(dis, dis + MAXN, INF);
+    dis[s] = 0;
+    for (int i = 1; i <= n; ++ i) {
+        int u = -1, MIN = INF;
+        for (int j = 0; j <= n; ++ j) {
+            if (!visited[j] && dis[j] < MIN) {
+                u = j, MIN = dis[j];
+            }
+        }
+        if (u == -1) return;
+        visited[u] = true;
+        for (int v = 0; v <= n; ++ v) {
+            if (!visited[v]) {
+                if (dis[u] + graph[u][v] < dis[v]) {
+                    dis[v] = dis[u] + graph[u][v];
+                    pre[v].clear();
+                    pre[v].push_back(u);
+                } else if (dis[u] + graph[u][v] == dis[v]) {
+                    pre[v].push_back(u);
+                }
+            }
+            
+        }
+    }
+}
+int minVal = INF, minCarry = INF;
+void DFS(int v, int s) {
+    if (v == s) {
+        tmpPath.push_back(v);
+        int value = 0, carry = 0;
+        for (int i = tmpPath.size() - 2; i >= 0;  -- i) {
+            if (carry + weight[tmpPath[i]] - cMax / 2 >= 0) {
+                carry += (weight[tmpPath[i]] - cMax / 2);
+            } else {
+                value += cMax / 2 - (carry + weight[tmpPath[i]]);
+                carry = 0;
+            }
+        }
+        if (value < minVal) {
+            path = tmpPath;
+            minVal = value;
+            minCarry = carry;
+        } else if (value == minVal && carry < minCarry) {
+        	path = tmpPath;
+            minCarry = carry;
+        }
+        tmpPath.pop_back();
+        return;
+    }
+    tmpPath.push_back(v);
+    for (int i = 0; i < pre[v].size(); ++ i) {
+        DFS(pre[v][i], 0);
+    }
+    tmpPath.pop_back();
+}
+void Init() {
+    fill(graph[0], graph[0] + MAXN * MAXN, INF);
+    fill(visited, visited + MAXN, false);
+}
+int main() {
+    Init();
+    cin >> cMax >> n >> ed >> m;
+    for(int i = 1; i <= n; ++ i) {
+        cin >> weight[i];
+    }
+    int a, b;
+    for (int i = 0; i < m; ++ i) {
+        cin >> a >> b;
+        cin >> graph[a][b];
+        graph[b][a] = graph[a][b];
+    }
+    Dijkstra(0);
+    DFS(ed, 0);
+    cout << minVal << " ";
+    for (int i = path.size() - 1; i >= 0; -- i) {
+        cout << path[i];
+        i > 0 ? cout << "->": cout << " ";
+    }
+    cout << minCarry << endl;
+    return 0;
+}

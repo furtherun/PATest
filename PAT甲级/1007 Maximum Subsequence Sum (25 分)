@@ -1,0 +1,65 @@
+//分值：
+//	25
+//考察点：
+//	动态规划中的最大子列和问题，虽然不用动态规划也可以
+//	find函数的使用，这里也可以自己写，更方便些解决问题
+//易错点：
+//	一些边界情况，特别是序列开头和结尾的0的处理需要使用find
+//	存储下标更方便写解决这个问题
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 10005;
+class Node {
+public:
+	int start, end;
+	int data;
+};
+Node dp[MAXN];
+vector <int> a;
+int main() {
+	int k, tmp;
+	cin >> k;
+	for (int i = 0; i < k; ++i) {
+		cin >> tmp;
+		a.push_back(tmp);
+	}
+	dp[0].start = dp[0].end = 0;
+	dp[0].data = a[0];
+	int u = 0, MAX = dp[0].data;
+	for (int i = 1; i < k; ++i) {
+		if (dp[i - 1].data + a[i] < a[i]) {
+			dp[i].data = a[i];
+			dp[i].start = dp[i].end = i;
+		}
+		else {
+			dp[i].data += dp[i - 1].data + a[i];
+			dp[i].start = dp[i - 1].start;
+			dp[i].end = i;
+		}
+		if (dp[i].data > MAX) {	//直接寻找最大子列和
+			MAX = dp[i].data;
+			u = i;
+		}
+	}
+	for (int i = dp[u].start; i <= dp[u].end; ++i) {
+		if (a[i] != 0) {
+			dp[u].start = i;
+			break;
+		}
+	}
+	for (int i = dp[u].end; i >= dp[u].start; --i) {
+		if (a[i] != 0) {
+			dp[u].end = i;
+			break;
+		}
+	}
+	if (MAX < 0) {
+		cout << "0" << " " << a[0] << " " << a[k - 1] << endl;	//为了适应vs2019，这里将a改为了vector
+	}
+	else {
+		cout << dp[u].data << " " << a[dp[u].start] << " " << a[dp[u].end] << endl;
+	}
+	return 0;
+}

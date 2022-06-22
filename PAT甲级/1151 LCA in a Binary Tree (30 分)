@@ -1,0 +1,93 @@
+//说明：
+//LCA模拟，类似之前的有一个镜像二叉树得判定，都是先构造，再模拟，和给定结果比较，
+//本题不是很熟练，暂时还没有弄懂LCA的算法，不过构建二叉树是比较熟练的了
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 10005;
+class Node {
+public:
+    int value;
+    Node* lchild, *rchild;
+};
+int m, n;
+vector<int> pre(MAXN), in(MAXN);
+Node* NewNode(int v) {
+    Node* tmp = new Node;
+    tmp->value = v;
+    tmp->lchild = tmp->rchild = nullptr;
+    return tmp;
+}
+Node* BuildTree(int preL, int preR, int inL, int inR) {
+    if (preR < preL) {
+        return nullprt;
+    }
+    Node* root = NewNode(pre[preL]);
+    int k;
+    for (k = inL, k <= inR; ++ k) {
+        if (in[k] == pre[preL]) {
+            break;
+        }
+    }
+    int numL = k - inL; //左子树节点数
+    root->lchild = BuildTree(preL + 1, preL + numL, inL, k - 1);
+    root->rchild = BuildTree(preL + numL + 1, preR, k + 1, inR);
+    return root;
+}
+Node* getLCA(Node* root, int u, int v) { //暂时还没有弄懂这个函数的原理
+    if (root == nullptr) {
+        return nullptr;
+    } else if (root->value == u || root->value == v) {
+        return root;
+    }
+    Node* left = getLCA(root->lchild, u, v);
+    Node* right = getLCA(root->rchild, u, v);
+    if (left && right) {
+        return root;
+    } else if (left) return left;
+    else return right;
+}
+int Find(int x) {
+    int pos = -1;
+    for (int i = 0; i < n; ++ i) {
+        if (in[i] == x) {
+            pos = i;
+            break;
+        } 
+    }
+    return pos;
+}
+int main() {
+    scanf("%d %d", &m, &n);
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &in[i]);
+    }
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &pre[i]);
+    }
+    Node* root = BuildTree(0, n - 1, 0, n - 1);
+    int a, b, pos;
+    while (m --) {
+        scanf("%d %d", &a, &b);
+        aPos = Find(a), bPos = Find(b);
+        if (aPos != -1 && bPos != -1) {
+            Node* tmp = getLCA(root, a, b);
+            if (tmp ->value == a) {
+                printf("%d is an ancestor of %d.\n", a, b);
+            } else if (tmp->value == b) {
+                printf("%d is an ancestor of %d.\n", b, a);
+            } else {
+                printf("LCA of %d and %d is %d.\n", a, b, tmp->value);
+            }
+            
+        } else if (aPos != -1) {
+            printf("ERROR: %d is not found.\n", b);
+        } else if (bPos != -1) {
+            printf("ERROR: %d is not found.\n", a);
+        } else {
+            printf("ERROR: %d and %d are not found.\n", a, b);
+        }
+    }
+    return 0;
+}

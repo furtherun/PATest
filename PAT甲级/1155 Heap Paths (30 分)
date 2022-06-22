@@ -1,0 +1,48 @@
+//考察点：
+//	递归，二叉树的静态表达
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 1010;
+int n;
+int heap[MAXN];
+vector <int> vi;
+bool isMinHeap = true, isMaxHeap = true;
+void Trave(int s) {
+    vi.push_back(heap[s]);
+    if (2 * s > n) { //该节点是叶子节点
+    	for (int i = 0; i < vi.size() - 1; ++ i) {
+            if (vi[i] < vi[i + 1]) { //不可能是大顶堆
+                isMaxHeap = false;
+            } else if (vi[i] > vi[i + 1]) { //不可能是小顶堆
+                isMinHeap = false;
+            }
+            printf("%d ", vi[i]);
+        }
+        printf("%d\n", vi[vi.size() - 1]);
+        vi.pop_back();
+        return;
+    }
+    if (s * 2 + 1 <= n) { //有右子树才可以递归
+        Trave(s * 2 + 1);
+    }
+    Trave(s * 2);
+    vi.pop_back();
+}
+int main() {
+	
+	scanf("%d", &n);
+    for (int i = 1; i <= n; ++ i) {
+        scanf("%d", &heap[i]);
+    }
+    Trave(1);
+    if (isMaxHeap) {
+        printf("Max Heap\n");
+    } else if (isMinHeap) {
+        printf("Min Heap\n");
+    } else {
+        printf("Not Heap\n");
+    }
+    return 0;
+}

@@ -1,0 +1,41 @@
+//考察点：
+//  map 和字符串
+//难点：
+//  单词分割
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <map>
+using namespace std;
+int main() {
+    string line, tmp;
+    map<string, int> mp;
+    getline(cin, line);
+    int i = 0; 
+    while (i < line.size()) {
+        while (i < line.size() && isalnum(line[i])) {
+            tmp += tolower(line[i ++]);
+        }
+        if (!tmp.empty()) {
+            if (mp.count(tmp)) {
+                mp[tmp] ++;
+            } else {
+                mp[tmp] = 1;
+            }
+            tmp.clear();
+        }
+        while (i < line.size() && !isalnum(line[i])) {
+            i ++;
+        }
+    }
+    string ans;
+    int MAX = -1;
+    for (map<string, int>::iterator it = mp.begin(); it != mp.end(); ++ it) {
+        if (it->second > MAX) {
+            MAX = it->second;
+            ans = it->first;
+        }
+    }
+    cout << ans << " " << MAX << endl;
+    return 0;
+}

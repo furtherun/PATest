@@ -1,0 +1,41 @@
+//分值：
+//	25
+//考察点：
+//	二分法、数据预处理、upper_bound()的使用技巧
+//易错点：
+//	技巧性比较强，lower_bound()和upper_bound()理解有误使用不当
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <map>
+using namespace std;
+const int MAXN = 100005;
+const int INF = 0x7fffffff;
+int main() {
+    int length, amount;
+    scanf("%d %d", &length, &amount);
+    int arr[MAXN];	 //arr[i]表示从 0 to i 的序列和 
+    arr[0] = 0;
+    for (int i = 1; i <= length; ++ i) {
+        cin >> arr[i];
+        arr[i] += arr[i - 1];
+    }
+    int nearAmount = INF;
+    for (int i = 1; i <= length; ++ i) {
+        int j = upper_bound(arr + i, arr + length + 1, arr[i - 1] + amount) - arr;
+        if (arr[j - 1] - arr[i - 1] == amount) { //i to j - 1 和为amount
+            nearAmount = amount;
+            break;
+        } else if (j <= length && \
+                   arr[j] - arr[i - 1] < nearAmount) { //寻找接近amount的最小解
+            nearAmount = arr[j] - arr[i - 1];
+        }
+    }
+    for (int i = 1; i <= length; ++ i) {
+        int j = upper_bound(arr + i, arr + length + 1, arr[i - 1] + nearAmount) - arr;
+        if (arr[j - 1] - arr[i - 1] == nearAmount) {
+            printf("%d-%d\n", i, j - 1);
+        }
+    }
+    return 0;
+}

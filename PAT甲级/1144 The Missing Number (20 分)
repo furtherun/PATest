@@ -1,0 +1,68 @@
+//说明：
+//也是一道容易让人想多的题目，所以怎么简单怎么来，不要在意超时或是超内存
+//一开始想到的方式是模拟，睡了一觉感觉hashTable不用全开一样可以做，所以两种方法都尝试了
+//感觉hashTable更直观
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <set>
+using namespace std;
+int main() {
+    int n, tmp, MAX = 0;
+    scanf("%d", &n);
+    priority_queue <int, vector<int>, greater<int>> heap;
+    for (int i = 0; i < n; ++ i) {
+        scanf("%d", &tmp);
+        if (tmp > 0) {
+            heap.push(tmp);
+            if (tmp > MAX) {
+                MAX = tmp;
+            }
+        }
+    }
+    if (heap.empty()) {
+        printf("1\n");
+    } else {
+        int idx = 1;
+        while (idx <= MAX) {
+            if (idx == heap.top()) {
+                heap.pop();
+                idx ++;
+            } else if (idx > heap.top()) {
+                heap.pop();
+            }  else if (idx < heap.top()) {
+                printf("%d\n", idx);
+                break;
+            }
+        }
+        if (heap.empty()) {
+            printf("%d\n", idx);
+        }
+    }
+	return 0;
+}
+//hash操作最为简单
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+const int MAXN = 100005;
+bool hashTable[MAXN] = {false};
+int main() {
+    int n, tmp;
+    scanf("%d", &n);
+    while (n --) {
+		scanf("%d", &tmp);
+		if (tmp > 0 && tmp < MAXN) {
+			hashTable[tmp] = true;
+		}
+	}
+    for (int i = 1; i < MAXN; ++ i) {
+        if (hashTable[i] == false) {
+            printf("%d\n", i);
+            break;
+        }
+    }
+    return 0;
+}

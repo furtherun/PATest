@@ -1,0 +1,48 @@
+//分值：
+//	25
+//考察点：
+//	DFS
+//易错点：
+//	图和树的题目容易忘记初始化
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int INF = 0X3F3F3F3F;
+const int MAXN = 2005;
+int graph[MAXN][MAXN];
+int n, m, k, tmp; 	//tmp为被排除的节点
+int cnt = 0; 	//连通集数量
+bool visited[MAXN];
+void DFS(int s, int tmp) {
+	visited[s] = true;
+	for (int i = 1; i <= n; ++i) {
+		if (i != tmp && !visited[i] && graph[s][i] != INF) {
+			DFS(i, tmp);
+		}
+	}
+}
+int DFSTrave(int tmp) {
+	cnt = 0; 	//每次查询前要初始化
+	fill(visited, visited + MAXN, false);
+	for (int i = 1; i <= n; i++) {
+		if (i != tmp && !visited[i]) {
+			DFS(i, tmp);
+			cnt++;
+		}
+	}
+	return cnt;
+}
+int main() {
+	int a = 0, b = 0;
+	cin >> n >> m >> k;
+	fill(graph[0], graph[0] + MAXN * MAXN, INF);
+	for (int i = 1; i <= m; ++i) {
+		cin >> a >> b;
+		graph[a][b] = graph[b][a] = 1;
+	}
+	while (k--) {
+		cin >> tmp;
+		cout << DFSTrave(tmp) - 1 << endl;
+	}
+	return 0;
+}

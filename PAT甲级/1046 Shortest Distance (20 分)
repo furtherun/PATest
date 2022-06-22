@@ -1,0 +1,35 @@
+//分值：
+//	20
+//考察点：
+//	存储优化，计算优化
+//易错点：
+//	最大数据容易超时
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 100005;
+int main() {
+    int n, m, a, b, tmp;
+    int dis[MAXN]; 	//1号节点到i号节点的距离
+    int total = 0;
+    cin >> n;
+    dis[1] = 0;
+    for (int i = 2; i <= n; ++ i) {
+        cin >> tmp;
+        dis[i] = dis[i - 1] + tmp;
+        total += tmp;
+    }
+    cin >> tmp; 	//从n到1的直接距离
+    total += tmp; 	//环的周长
+    cin >> m;
+    while (m --) {
+        int tmp = 0;
+        cin >> a >> b;
+        if (b < a) {
+            swap(a, b);
+        }
+        tmp = dis[b] - dis[a];
+        cout << min(tmp, total - tmp) << endl;
+    }
+    return 0;
+}

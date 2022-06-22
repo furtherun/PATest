@@ -1,0 +1,70 @@
+//分值：
+//	25
+//考察点：
+//	查找
+//易错点：
+//	处理不当可能会超时
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
+using namespace std;
+class Student{
+public:
+    string name, id;
+    int grade;
+};
+vector <Student> male, female;
+inline int getMinMale() {
+    int u = 0;
+    for (int i = 1; i < male.size(); ++ i) {
+        if (male[i].grade < male[u].grade) {
+            u = i;
+        }
+    }
+    return u;
+}
+inline int getMaxFemale() {
+    int u = 0;
+    for (int i = 1; i < female.size(); ++ i) {
+        if (female[i].grade > female[u].grade) {
+            u = i;
+        }
+    }
+    return u;
+}
+int main() {
+    int n;
+    Student stu;
+    string gender;
+	cin >> n;
+    for (int i = 0; i < n; ++ i) {
+        cin >> stu.name >> gender >> stu.id >> stu.grade;
+        if (gender == "M") {
+            male.push_back(stu);
+        } else {
+            female.push_back(stu);
+        }
+    }
+    if (!male.empty() && !female.empty()) {
+        int minPos = getMinMale(), maxPos = getMaxFemale();
+        cout << female[maxPos].name << " " << female[maxPos].id << endl;
+        cout << male[minPos].name << " " << male[minPos].id << endl;
+        cout << female[maxPos].grade - male[minPos].grade << endl;
+    } else {
+        if (female.empty()) {
+            cout << "Absent" << endl;
+        } else {
+            int maxPos = getMaxFemale();
+            cout << female[maxPos].name << " " << female[maxPos].id << endl;
+        }
+        if (male.empty()) {
+            cout << "Absent" << endl;
+        } else {
+            int minPos = getMinMale();
+            cout << male[minPos].name << " " << male[minPos].id << endl;
+        }
+        cout << "NA" << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,53 @@
+//分值：
+//	20
+//考察点：
+//	素数判断，进制转换
+//易错点：
+//	边界条件，注意小细节，注意如何存贮数据
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 110;	//按照2进制计算需要的数组长度，大约20位就足够了
+bool isPrime(int x) {	//稍微优化的素数判断
+	bool flag = true;
+	if (x % 2 == 0 && x > 2 || x == 1) {	//这里用来排除1 to 8的个案
+		flag = false;	//4 to 8，实际上偶数都不是，奇数都是，1和2这两个数则相反
+	}
+	else {
+		for (int i = 3; i * i <= x; i += 2) {
+			if (x % i == 0) {
+				flag = false;
+				break;
+			}
+		}
+	}
+	return flag;
+}
+int main() {
+	int n = 1, d = 1;
+	int dNum[MAXN];
+	while (cin >> n, n > 0) {
+		cin >> d;
+		bool flag = false;
+		if (isPrime(n)) {
+			//itoa(n, dNum, d); 这个函数只能在win上使用，PAT提交不可以
+			//int len = strlen(dNum);
+			int len = 0;
+			do
+			{
+				dNum[len++] = n % d;
+				n /= d;
+			} while (n != 0);	//经过素数判断了,这里不用排除0
+			//reverse(dNum, dNum + len);
+			//n = 0; 上一步结束后n必定为0
+			for (int i = 0; i < len; ++i) {
+				n = n * d + dNum[i];	//进制转化公式
+			}
+			if (isPrime(n)) {
+				flag = true;
+			}
+		}
+		puts(flag ? "Yes" : "No");
+	}
+	return 0;
+}

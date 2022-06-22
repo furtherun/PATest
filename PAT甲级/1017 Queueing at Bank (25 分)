@@ -1,0 +1,59 @@
+//分值：
+//	25
+//考察点：
+//	快乐模拟、排队
+//易错点：
+//	时间做差的先后顺序
+#include <iostream>
+#include <algorithm>
+#include <numeric>
+#include <vector>
+using namespace std;
+const int MAX_K = 105;	//最大窗口数
+class Client {
+public:
+	int arriveTime, processing;
+};
+int ToSecond(int h, int m, int s) {
+	return h * 3600 + m * 60 + s;
+}
+int cmp(Client a, Client b) {
+	return a.arriveTime < b.arriveTime;
+}
+int main() {
+	vector <Client> customer;
+	int endTime[MAX_K]; 	//每个窗口最后服务结束时间
+	int start = ToSecond(8, 0, 0), end = ToSecond(17, 0, 0);
+	fill(endTime, endTime + MAX_K, start);
+	int hour = 0, minute = 0, second = 0, process;
+	int n, k;
+	cin >> n >> k;
+	for (int i = 0; i < n; ++i) {
+		scanf("%d:%d:%d %d", &hour, &minute, &second, &process);
+		Client c;
+		c.arriveTime = ToSecond(hour, minute, second);
+		if (c.arriveTime > end) continue;	 //17:00后的人不考虑
+		c.processing = ToSecond(0, process, 0);
+		customer.push_back(c);
+	}
+	int totalWaitTime = 0;
+	n = customer.size(); 	//17:00前的总人数
+	sort(customer.begin(), customer.end(), cmp);
+	for (int i = 0; i < n; ++i) {
+		int u = 0;
+		for (int j = 1; j < k; ++j) {
+			if (endTime[j] < endTime[u]) {
+				u = j;
+			}
+		}
+		if (endTime[u] <= customer[i].arriveTime) { 	//无需等待
+			endTime[u] = customer[i].arriveTime + customer[i].processing;
+		}
+		else {
+			totalWaitTime += (endTime[u] - customer[i].arriveTime);
+			endTime[u] += customer[i].processing;
+		}
+	}
+	n == 0 ? printf("0.0\n") : printf("%.1f\n", totalWaitTime / (60.f * n)); 	//一开始没注意这个小数输出格式写错了顺序，检查了好久才发现
+	return 0;
+}

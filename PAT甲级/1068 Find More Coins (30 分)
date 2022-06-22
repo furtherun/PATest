@@ -1,0 +1,57 @@
+//只找两个数和为定值用two points，三个及三个以上则需要用动态规划中的01背包问题
+//考察点：
+//	01背包问题，涉及到了滚动数组，理解起来有些难度，原理还不是太懂，有些冷门了
+//说明：
+//  算法笔记上给的参考代码有错误，大约在选择最优路径和输出时，都有一些小错误
+//  因为不是很懂这题的原理，暂时就不先评论了
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int MAXN = 10005;
+const int MAXV = 105;
+int cmp(int a, int b) {
+    return a > b;
+}
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    int w[MAXN], dp[MAXV] = {0};
+    bool isSelected[MAXN][MAXV]; //i物品是否被选择，此时的空间为v
+    for (int i = 1; i <= n; ++ i) {
+        scanf("%d", &w[i]); //权重大的在前面
+    }
+    sort(w + 1, w + n + 1, cmp);
+    for (int i = 1; i <= n; ++ i) {
+        for (int v = m; v >= w[i]; -- v) {
+            if (dp[v] <= dp[v - w[i]] + w[i]) {
+                dp[v] = dp[v - w[i]] + w[i];
+                isSelected[i][v] = true;
+            } else {
+                isSelected[i][v] = false;
+            }
+        }
+    }
+    if (dp[m] != m) printf("No Solution\n");
+    else {
+		bool flag[MAXN];
+        int k = n, num = 0, v = m; //从小的一段开始枚举
+        while (v > 0) {
+            if (isSelected[k][v]) {
+                v -= w[k];
+                num ++;
+                flag[k] = true;
+            } else {
+                flag[k] = false;
+            }
+            -- k;
+        }
+		for (int i = n; i > 0; -- i) {
+			if (flag[i] && num) {
+				printf("%d", w[i]);
+				num --;
+				printf(num == 0? "\n": " ");
+			}
+		}
+    }
+    return 0;
+}

@@ -1,0 +1,42 @@
+//考察点：
+//	字符串处理
+//易错点：
+//	漏掉第一个字符串没有处理完的情况
+//	AB_CD_EF
+//  ABCE
+//说明：
+//	本题最好是使用hash，但是数据长度较小，直接用find也不会超时
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+using namespace std;
+int main() {
+    string origin, now;
+    cin >> origin >> now;
+    vector <char> vi;
+    int i = 0, j = 0;
+    while (i < origin.size() && j < now.size()) {
+        if (origin[i] == now[j]) {
+            i ++;
+            j ++;
+        } else {
+            if (islower(origin[i])) origin[i] = origin[i] - 'a' + 'A';
+            if (find(vi.begin(), vi.end(), origin[i]) == vi.end()) {
+                vi.push_back(origin[i]);
+            }
+            i ++;
+        }
+    }
+    while (i < origin.size()) { //可能第二个字符串已经结束，第一个字符串还没结束
+        if (islower(origin[i])) origin[i] = origin[i] - 'a' + 'A';
+        if (find(vi.begin(), vi.end(), origin[i]) == vi.end()) {
+            vi.push_back(origin[i]);
+        }
+        i ++;
+    }
+    for (int i = 0; i < vi.size(); ++ i) {
+        printf("%c", vi[i]);
+    }
+    return 0;
+}

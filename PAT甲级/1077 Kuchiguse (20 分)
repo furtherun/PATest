@@ -1,0 +1,44 @@
+//考察点：
+//	字符串操作，最长公共后缀
+//易错点：
+//	字符串要按行读入
+//	getchar不使用损失掉一个字符串
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+const int MAXN = 105;
+int main() {
+    int n, minLen = 300;;
+    string arr[MAXN];
+    string tmp;
+    scanf("%d", &n);
+    getchar();
+    for (int i = 0; i < n; ++ i) {
+        getline(cin, arr[i]);
+        minLen = min(minLen, (int)arr[i].size());
+        reverse(arr[i].begin(), arr[i].end());
+    }
+    int index = 0;
+    bool flag = true;
+    while (index < minLen  && flag) {
+        for (int i = 1; i < n; ++ i) {
+            if (arr[i][index] != arr[0][index]) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            index ++;
+        }
+    }
+    if (index == 0) {
+        printf("nai\n");
+    } else {
+        for (int i = index - 1; i >= 0; -- i) {
+            printf("%c", arr[0][i]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
